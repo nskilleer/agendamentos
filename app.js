@@ -6,6 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 
+
 // =====================================================
 // Importa middlewares customizados
 // =====================================================
