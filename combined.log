@@ -1911,3 +1911,23 @@
 {"body":{"appointmentId":"689652c2ed7bab4292ef1d7d","telefone":"79999844588"},"level":"info","message":"Tentativa de cancelar agendamento (cliente)","timestamp":"2025-08-09 15:15:25"}
 {"appointmentId":"689652c2ed7bab4292ef1d7d","level":"info","message":"Agendamento cancelado por cliente","timestamp":"2025-08-09 15:15:25"}
 {"level":"info","message":"Tentativa de obter agendamentos do cliente","pro_id":"6893c42c732c70b1617bc383","telefone":"79999844588","timestamp":"2025-08-09 15:15:26"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 15:40:43"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 15:40:45"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 15:40:45"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 15:40:45"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 15:49:50"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 15:49:52"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 15:49:52"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 15:49:52"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 15:49:58"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 15:50:00"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 15:50:00"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 15:50:00"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 15:52:22"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 15:52:24"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 15:52:24"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 15:52:24"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 15:53:13"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 15:53:14"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 15:53:14"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 15:53:14"}

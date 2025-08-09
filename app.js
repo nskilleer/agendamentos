@@ -132,4 +132,5 @@ app.get('/painelcli', (req, res) => {
 // Ele deve ser o último `app.use` a ser chamado.
 app.use(errorHandler);
 
+
 module.exports = app;
