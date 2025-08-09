@@ -1,1 +1,5 @@
-node_modules
+require('dotenv').config({ path: './variaveisambiente.env' });
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Conexão OK'))
+  .catch(err => console.error('Erro MongoDB:', err));

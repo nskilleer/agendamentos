@@ -5,6 +5,15 @@ const session = require('express-session');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
+// Rotas para servir arquivos HTML diretamente
+const htmlViews = [
+    'login', 'cadastro', 'agenda', 'painelcli', 'painelpro', 'config'
+];
+htmlViews.forEach(view => {
+    app.get(`/${view}`, (req, res) => {
+        res.sendFile(path.join(__dirname, 'views', `${view}.html`));
+    });
+});
 
 // =====================================================
 // Importa middlewares customizados
@@ -104,28 +113,24 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
+// Rotas para servir arquivos HTML diretamente
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
-
 app.get('/cadastro', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'cadastro.html'));
 });
-
-app.get('/painelpro', requireAuth, checkUserType(['profissional']), (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'painelpro.html'));
-});
-
-app.get('/agenda', requireAuth, checkUserType(['profissional']), (req, res) => {
+app.get('/agenda', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'agenda.html'));
 });
-
-app.get('/config', requireAuth, checkUserType(['profissional']), (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'config.html'));
-});
-
 app.get('/painelcli', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'painelcli.html'));
+});
+app.get('/painelpro', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'painelpro.html'));
+});
+app.get('/config', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'config.html'));
 });
 
 // Middleware de erro no final da cadeia.

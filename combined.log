@@ -1931,3 +1931,58 @@
 {"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 15:53:14"}
 {"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 15:53:14"}
 {"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 15:53:14"}
+{"email":"NATHANDASILVA052@GMAIL.COM","level":"info","message":"Tentativa de login","timestamp":"2025-08-09 16:03:15"}
+{"level":"info","message":"Login bem-sucedido","timestamp":"2025-08-09 16:03:15","userEmail":"NATHANDASILVA052@GMAIL.COM","user_id":"6893c42c732c70b1617bc383","user_type":"profissional"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-09 16:03:16","userId":"6893c42c732c70b1617bc383"}
+{"count":2,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-09 16:03:17","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Tentativa de obter clientes do profissional","timestamp":"2025-08-09 16:03:28","userId":"6893c42c732c70b1617bc383"}
+{"count":3,"level":"info","message":"Clientes encontrados para o profissional","timestamp":"2025-08-09 16:03:28","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:29:19"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:29:21"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:29:21"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:29:21"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:30:05"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:30:07"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:30:09"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:30:09"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:30:09"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:30:10"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:30:12"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:30:12"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:30:12"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:33:37"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:33:38"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:33:38"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:33:38"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:35:22"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:35:24"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:35:24"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:35:24"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:36:17"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:36:18"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:36:18"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:36:18"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:37:08"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:37:10"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:37:10"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:37:10"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:37:14"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:37:15"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:37:15"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:37:15"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:37:21"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:37:22"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:37:22"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:37:22"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:37:37"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:37:39"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:37:39"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:37:39"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:37:59"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:38:01"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:38:01"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:38:01"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-09 18:38:11"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-09 18:38:13"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-09 18:38:13"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-09 18:38:13"}
