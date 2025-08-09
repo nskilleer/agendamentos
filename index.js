@@ -1,29 +1,28 @@
 // Arquivo: index.js
 
-require('dotenv').config({ path: './variaveisambiente.env' }); // Carrega variáveis de ambiente
-const app = require('./app'); // Importa a aplicação Express JÁ CONFIGURADA do app.js
-const logger = require('./configuracoes/logger'); // Importa o logger
+
+require('dotenv').config({ path: './variaveisambiente.env' });
+const app = require('./app');
+const logger = require('./configuracoes/logger');
 const { connectDB } = require('./middlewares/dbMiddleware');
 
-const port = process.env.PORT || 3333; // Define a porta
+const port = process.env.PORT || 3333;
 
-// ===================================
-// Inicialização do Servidor e Conexão com DB
-// ===================================
-async function startApplication() {
-    try {
-        await connectDB();
-        // A lógica do try/catch garante que o servidor só subirá após o sucesso.
+// Exporta o handler para Vercel
+module.exports = app;
 
-        app.listen(port, () => {
-            logger.info(`Servidor rodando na porta ${port}`);
-            // Substitui console.log por logger.info para padronização.
-            logger.info(`Servidor rodando: http://localhost:${port}`);
-        });
-    } catch (error) {
-        logger.error('Falha ao iniciar o servidor:', error);
-        process.exit(1); // Encerrar o processo em caso de erro fatal
-    }
+// Inicialização local (apenas se não estiver no ambiente Vercel)
+if (process.env.VERCEL !== '1') {
+    (async () => {
+        try {
+            await connectDB();
+            app.listen(port, () => {
+                logger.info(`Servidor rodando na porta ${port}`);
+                logger.info(`Servidor rodando: http://localhost:${port}`);
+            });
+        } catch (error) {
+            logger.error('Falha ao iniciar o servidor:', error);
+            process.exit(1);
+        }
+    })();
 }
-
-startApplication(); // Chama a função para iniciar tudo
