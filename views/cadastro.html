@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgendaFácil - Cadastro</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body class="centered-page-body">
+    <div class="cardlog">
+        <h1 class="text-2xl font-bold text-center text-blue-600 mb-6">AgendaFácil - Cadastro</h1>
+        <form id="cadastro-form" class="space-y-4">
+            <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" name="nome" autocomplete="name" required placeholder="Seu nome completo">
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" autocomplete="email" required
+                    placeholder="seuemail@exemplo.com">
+            </div>
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" autocomplete="new-password" required
+                    placeholder="Crie uma senha segura">
+            </div>
+            <div class="form-group">
+                <label for="confirmar-senha">Confirmar Senha</label>
+                <input type="password" id="confirmar-senha" name="confirmar-senha" autocomplete="new-password" required
+                    placeholder="Confirme sua senha">
+            </div>
+            <button type="submit" id="cadastro-button" class="button w-full mt-4">Cadastrar</button>
+        </form>
+        <div id="message" class="message hidden"></div>
+        <p class="text-center mt-4 text-sm">
+            Já tem uma conta? <a href="/login">Faça login aqui</a>
+        </p>
+    </div>
+
+    <script>
+        const cadastroForm = document.getElementById('cadastro-form');
+        const messageElement = document.getElementById('message');
+        const cadastroButton = document.getElementById('cadastro-button');
+
+        cadastroForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            cadastroButton.disabled = true;
+            cadastroButton.innerHTML = 'Cadastrando... <span class="spinner"></span>';
+            messageElement.classList.add('hidden');
+
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const confirmarSenha = document.getElementById('confirmar-senha').value;
+
+            if (senha !== confirmarSenha) {
+                messageElement.textContent = 'As senhas não coincidem!';
+                messageElement.className = 'message error';
+                messageElement.classList.remove('hidden');
+
+                cadastroButton.disabled = false;
+                cadastroButton.innerHTML = 'Cadastrar';
+                return;
+            }
+
+            const registerData = { nome, email, senha, userType: 'profissional' };
+
+            try {
+                const registerResponse = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(registerData)
+                });
+
+                const registerResult = await registerResponse.json();
+
+                if (registerResponse.ok && registerResult.success) {
+                    messageElement.textContent = 'Cadastro bem-sucedido! Redirecionando para o painel...';
+                    messageElement.className = 'message success';
+                    messageElement.classList.remove('hidden');
+
+                    setTimeout(() => {
+                        window.location.href = registerResult.data.redirect;
+                    }, 1000);
+                } else {
+                    messageElement.textContent = 'Erro no cadastro: ' + (registerResult.message || 'Erro desconhecido. Por favor, tente novamente.');
+                    messageElement.className = 'message error';
+                    messageElement.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                messageElement.textContent = 'Erro ao se conectar com o servidor. Verifique o console para mais detalhes.';
+                messageElement.className = 'message error';
+                messageElement.classList.remove('hidden');
+            } finally {
+                // Reativa o botão em caso de erro
+                cadastroButton.disabled = false;
+                cadastroButton.innerHTML = 'Cadastrar';
+            }
+        });
+    </script>
+</body>
+
+</html>

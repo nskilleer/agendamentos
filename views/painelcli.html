@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Agendar Serviço - AgendaFácil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body>
+    <header class="header bg-blue-600 text-white p-4 flex justify-between items-center">
+        <a href="/" class="logo text-2xl font-bold">AgendaFácil</a>
+        <button id="my-appointments-btn" class="btn-secondary">
+            <i class="fas fa-calendar-check mr-2"></i>Meus Agendamentos
+        </button>
+    </header>
+
+    <main class="container p-6 mx-auto">
+        <div id="service-step" class="step-container">
+            <h1 class="text-3xl font-bold mb-6 text-center">Selecione um Serviço</h1>
+            <div id="services-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div id="loading-services" class="col-span-full text-center text-gray-500">
+                    Carregando serviços...
+                </div>
+            </div>
+        </div>
+
+        <div id="date-time-step" class="step-container hidden">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold" id="selected-service-title"></h2>
+                <button id="back-to-services" class="btn-secondary">
+                    <i class="fas fa-arrow-left mr-2"></i>Voltar
+                </button>
+            </div>
+
+            <div class="card bg-white p-4 rounded shadow-md mb-6">
+                <h3 class="text-xl font-semibold mb-4">Selecione o dia</h3>
+                <div class="flex items-center justify-between mb-4">
+                    <button id="prev-week-btn" class="p-2 text-gray-600 hover:text-blue-600">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div id="week-display" class="font-semibold text-lg"></div>
+                    <button id="next-week-btn" class="p-2 text-gray-600 hover:text-blue-600">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div id="days-list" class="flex justify-between overflow-x-auto gap-2">
+                </div>
+            </div>
+
+            <div class="card bg-white p-4 rounded shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Selecione o horário</h3>
+                <div id="time-slots-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    <div id="no-times-message" class="col-span-full text-center text-gray-500 hidden">
+                        Selecione um dia para ver os horários disponíveis.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button" id="close-confirm-modal">&times;</span>
+            <h2 class="text-xl font-bold mb-4">Confirmar Agendamento</h2>
+            <div id="confirm-details" class="mb-4">
+                <p>Serviço: <strong id="confirm-service-name"></strong></p>
+                <p>Data: <strong id="confirm-date"></strong></p>
+                <p>Hora: <strong id="confirm-time"></strong></p>
+            </div>
+            <form id="appointment-form">
+                <div class="form-group">
+                    <label for="client-name" class="form-label">Seu Nome</label>
+                    <input type="text" id="client-name" name="client-name" required class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="client-phone" class="form-label">Seu Telefone</label>
+                    <input type="text" id="client-phone" name="client-phone" required class="form-input"
+                        placeholder="(DDD) 99999-9999">
+                </div>
+                <div class="modal-buttons mt-4">
+                    <button type="submit" class="button btn-primary">Agendar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="appointments-modal" class="modal hidden">
+        <div class="modal-content modal-scrollable-content">
+            <span class="close-button" id="close-appointments-modal">&times;</span>
+            <h2 class="text-xl font-bold mb-4">Meus Agendamentos</h2>
+            <form id="appointments-form">
+                <div class="form-group">
+                    <label for="my-appointments-phone" class="form-label">Seu Telefone</label>
+                    <input type="text" id="my-appointments-phone" name="my-appointments-phone" required
+                        class="form-input" placeholder="(DDD) 99999-9999">
+                </div>
+                <div class="modal-buttons mt-4">
+                    <button type="submit" class="button btn-primary">Ver Agendamentos</button>
+                </div>
+            </form>
+            <div id="my-appointments-list" class="mt-6 hidden">
+                <div id="loading-appointments" class="text-center text-gray-500 hidden">
+                    Carregando agendamentos...
+                </div>
+                <div id="no-appointments-message" class="text-center text-gray-500 hidden">
+                    Nenhum agendamento encontrado para este número.
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const serviceStep = document.getElementById('service-step');
+            const dateTimeStep = document.getElementById('date-time-step');
+            const servicesList = document.getElementById('services-list');
+            const loadingServices = document.getElementById('loading-services');
+            const selectedServiceTitle = document.getElementById('selected-service-title');
+            const backToServicesBtn = document.getElementById('back-to-services');
+            const daysList = document.getElementById('days-list');
+            const timeSlotsList = document.getElementById('time-slots-list');
+            const prevWeekBtn = document.getElementById('prev-week-btn');
+            const nextWeekBtn = document.getElementById('next-week-btn');
+            const weekDisplay = document.getElementById('week-display');
+            const noTimesMessage = document.getElementById('no-times-message');
+
+            const confirmModal = document.getElementById('confirm-modal');
+            const closeConfirmModal = document.getElementById('close-confirm-modal');
+            const appointmentForm = document.getElementById('appointment-form');
+            const confirmServiceName = document.getElementById('confirm-service-name');
+            const confirmDate = document.getElementById('confirm-date');
+            const confirmTime = document.getElementById('confirm-time');
+            const clientNameInput = document.getElementById('client-name');
+            const clientPhoneInput = document.getElementById('client-phone');
+
+            const appointmentsModal = document.getElementById('appointments-modal');
+            const closeAppointmentsModal = document.getElementById('close-appointments-modal');
+            const myAppointmentsBtn = document.getElementById('my-appointments-btn');
+            const appointmentsForm = document.getElementById('appointments-form');
+            const myAppointmentsPhoneInput = document.getElementById('my-appointments-phone');
+            const myAppointmentsList = document.getElementById('my-appointments-list');
+            const loadingAppointments = document.getElementById('loading-appointments');
+            const noAppointmentsMessage = document.getElementById('no-appointments-message');
+
+            let selectedService = null;
+            let selectedDate = null;
+            let selectedTime = null;
+            let selectedWeekStart = new Date();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const proId = urlParams.get('pro_id');
+
+            if (!proId) {
+                // Caso não haja um pro_id na URL, redireciona ou mostra uma mensagem de erro
+                // window.location.href = '/error_page'; 
+                console.error("ID do profissional não encontrado na URL.");
+            }
+
+            const fetchServices = async () => {
+                loadingServices.classList.remove('hidden');
+                servicesList.innerHTML = '';
+                try {
+                    const response = await fetch(`/api/get_servicos_cliente?pro_id=${proId}`);
+                    const data = await response.json();
+                    if (data.success && data.data.length > 0) {
+                        data.data.forEach(service => {
+                            const serviceCard = document.createElement('div');
+                            serviceCard.className = 'service-card card bg-white p-6 rounded shadow-md';
+                            serviceCard.innerHTML = `
+                                <h3 class="text-xl font-bold mb-2">${service.nome}</h3>
+                                <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Duração: ${service.duracao_min} min</span>
+                            <span class="text-lg font-bold text-blue-600">R$ ${service.preco.toFixed(2)}</span>
+                                </div>
+                                `;
+                            serviceCard.addEventListener('click', () => {
+                                selectedService = service;
+                                showDateTimeStep();
+                            });
+                            servicesList.appendChild(serviceCard);
+                        });
+                    } else {
+                        servicesList.innerHTML = '<p class="col-span-full text-center text-gray-500">Nenhum serviço disponível no momento.</p>';
+                    }
+                } catch (error) {
+                    servicesList.innerHTML = '<p class="col-span-full text-center text-red-500">Erro ao carregar serviços.</p>';
+                    console.error('Erro ao buscar serviços:', error);
+                } finally {
+                    loadingServices.classList.add('hidden');
+                }
+            };
+
+            const showDateTimeStep = () => {
+                serviceStep.classList.add('hidden');
+                dateTimeStep.classList.remove('hidden');
+                selectedServiceTitle.textContent = selectedService.nome;
+                renderWeek();
+            };
+
+            const showServiceStep = () => {
+                serviceStep.classList.remove('hidden');
+                dateTimeStep.classList.add('hidden');
+                selectedService = null;
+                selectedDate = null;
+                selectedTime = null;
+                timeSlotsList.innerHTML = '';
+                noTimesMessage.textContent = 'Selecione um dia para ver os horários disponíveis.';
+                noTimesMessage.classList.remove('hidden');
+            };
+
+            const renderWeek = () => {
+                daysList.innerHTML = '';
+                const now = new Date();
+                now.setHours(0, 0, 0, 0);
+
+                const weekStart = new Date(selectedWeekStart);
+                weekStart.setHours(0, 0, 0, 0);
+
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+                weekDisplay.textContent = `${weekStart.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })} - ${weekEnd.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })}`;
+
+                for (let i = 0; i < 7; i++) {
+                    const day = new Date(weekStart);
+                    day.setDate(weekStart.getDate() + i);
+
+                    const isPastDay = day < now;
+
+                    const dayItem = document.createElement('div');
+                    dayItem.className = `day-item flex flex-col items-center p-2 rounded-lg ${isPastDay ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : ''}`;
+                    if (selectedDate && day.toDateString() === selectedDate.toDateString()) {
+                        dayItem.classList.add('selected');
+                    }
+                    dayItem.innerHTML = `
+                    <span class="text-xs font-bold">${day.toLocaleDateString('pt-BR', { weekday: 'short' })}</span>
+                    <span class="text-xl">${day.getDate()}</span>
+                    `;
+
+                    if (!isPastDay) {
+                        dayItem.addEventListener('click', () => {
+                            selectedDate = day;
+                            document.querySelectorAll('.day-item').forEach(el => el.classList.remove('selected'));
+                            dayItem.classList.add('selected');
+                            fetchTimeSlots(day);
+                        });
+                    }
+                    daysList.appendChild(dayItem);
+                }
+            };
+
+            const fetchTimeSlots = async (date) => {
+                timeSlotsList.innerHTML = `<div class="col-span-full text-center text-gray-500">Carregando horários...</div>`;
+                noTimesMessage.classList.add('hidden');
+                try {
+                    const dateStr = date.toISOString().split('T')[0];
+                    const response = await fetch(`/api/get_horarios_disponiveis?pro_id=${proId}&serviceId=${selectedService._id}&date=${dateStr}`);
+                    const data = await response.json();
+
+                    timeSlotsList.innerHTML = '';
+                    if (data.success && data.data.length > 0) {
+                        const now = new Date();
+                        const isToday = date.toDateString() === now.toDateString();
+                        let hasAvailableSlots = false;
+
+                        data.data.forEach(time => {
+                            if (isToday) {
+                                const [hour, minute] = time.split(':').map(Number);
+                                const slotTime = new Date();
+                                slotTime.setHours(hour, minute, 0, 0);
+                                if (slotTime <= now) {
+                                    return;
+                                }
+                            }
+
+                            hasAvailableSlots = true;
+                            const timeSlot = document.createElement('div');
+                            timeSlot.className = 'time-slot text-center p-3 rounded-lg border border-gray-300';
+                            timeSlot.textContent = time;
+                            timeSlot.addEventListener('click', () => {
+                                selectedTime = time;
+                                document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+                                timeSlot.classList.add('selected');
+                                openConfirmModal();
+                            });
+                            timeSlotsList.appendChild(timeSlot);
+                        });
+
+                        if (!hasAvailableSlots) {
+                            noTimesMessage.textContent = 'Nenhum horário disponível para este dia.';
+                            noTimesMessage.classList.remove('hidden');
+                        }
+                    } else {
+                        noTimesMessage.textContent = 'Nenhum horário disponível para este dia.';
+                        noTimesMessage.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    timeSlotsList.innerHTML = `<div class="col-span-full text-center text-red-500">Erro ao carregar horários.</div>`;
+                    console.error('Erro ao buscar horários:', error);
+                }
+            };
+
+            const openConfirmModal = () => {
+                if (!selectedService || !selectedDate || !selectedTime) return;
+
+                const formattedDate = selectedDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+                confirmServiceName.textContent = selectedService.nome;
+                confirmDate.textContent = formattedDate;
+                confirmTime.textContent = selectedTime;
+
+                confirmModal.classList.remove('hidden');
+            };
+
+            const createAppointment = async (e) => {
+                e.preventDefault();
+                const clientName = clientNameInput.value;
+                const clientPhone = clientPhoneInput.value;
+
+                const appointmentData = {
+                    nomeCliente: clientName,
+                    telefoneCliente: clientPhone,
+                    serviceId: selectedService._id,
+                    start: `${selectedDate.toISOString().split('T')[0]}T${selectedTime}:00.000Z`, // Formato ISO 8601
+                    duracao_min: selectedService.duracao_min,
+                    profissionalId: proId
+                };
+
+                console.log('Dados do agendamento enviados:', appointmentData);
+
+                try {
+                    const response = await fetch('/api/agendamentos', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(appointmentData)
+                    });
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('Agendamento realizado com sucesso! ' + data.message);
+                        confirmModal.classList.add('hidden');
+                        showServiceStep();
+                    } else {
+                        alert('Erro ao agendar: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Erro ao criar agendamento:', error);
+                    alert('Erro na comunicação com o servidor.');
+                }
+            };
+
+            const fetchAppointments = async (e) => {
+                e.preventDefault();
+                const clientPhone = myAppointmentsPhoneInput.value;
+                myAppointmentsList.classList.remove('hidden');
+                loadingAppointments.classList.remove('hidden');
+                noAppointmentsMessage.classList.add('hidden');
+                myAppointmentsList.innerHTML = '';
+
+                try {
+                    const response = await fetch(`/api/get_agendamentos_cliente?pro_id=${proId}&telefone=${clientPhone}`);
+                    const data = await response.json();
+
+                    if (data.success && data.data.length > 0) {
+                        data.data.forEach(app => {
+                            const appointmentCard = document.createElement('div');
+                            appointmentCard.className = 'card bg-white p-4 rounded shadow-md mb-2 flex justify-between items-center';
+                            const appObject = app;
+
+                            const appointmentDate = appObject.start ? new Date(appObject.start) : null;
+                            const formattedDate = appointmentDate ? appointmentDate.toLocaleDateString('pt-BR') : 'Data não disponível';
+                            const formattedTime = appointmentDate ? appointmentDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+                            const status = appObject.status;
+
+                            let cancelButtonHtml = '';
+                            if (status === 'agendado') {
+                                cancelButtonHtml = `<button class="btn-delete" data-appointment-id="${appObject._id}">Cancelar</button>`;
+                            }
+
+                            appointmentCard.innerHTML = `<div>
+                                <p class="font-bold">${appObject.serviceId?.nome || 'Serviço não encontrado'}</p>
+                                <p>Cliente: ${appObject.nomeCliente}</p>
+                                <p>Data: ${formattedDate} às ${formattedTime}</p>
+                                <p>Status: ${status}</p>
+                            </div>
+                            ${cancelButtonHtml}`;
+
+                            myAppointmentsList.appendChild(appointmentCard);
+                        })
+                        document.querySelectorAll('.btn-delete').forEach(button => {
+                            button.addEventListener('click', cancelAppointment);
+                        });
+                    } else {
+                        noAppointmentsMessage.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar agendamentos:', error);
+                    myAppointmentsList.innerHTML = '<p class="text-center text-red-500">Erro ao carregar agendamentos.</p>';
+                } finally {
+                    loadingAppointments.classList.add('hidden');
+                }
+            };
+
+            const cancelAppointment = async (e) => {
+                const appointmentId = e.target.dataset.appointmentId;
+                if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
+
+                try {
+                    const response = await fetch('/api/cancel_appointment_cliente', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ appointmentId, telefone: myAppointmentsPhoneInput.value })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Agendamento cancelado com sucesso.');
+                        appointmentsForm.dispatchEvent(new Event('submit'));
+                    } else {
+                        alert('Erro ao cancelar agendamento: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Erro ao cancelar agendamento:', error);
+                    alert('Erro na comunicação com o servidor.');
+                }
+            };
+
+            prevWeekBtn.addEventListener('click', () => {
+                // Impede de voltar para semanas passadas
+                const newWeekStart = new Date(selectedWeekStart);
+                newWeekStart.setDate(newWeekStart.getDate() - 7);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (newWeekStart < today) {
+                    alert('Não é possível navegar para semanas passadas.');
+                    return;
+                }
+                selectedWeekStart = newWeekStart;
+                renderWeek();
+                timeSlotsList.innerHTML = '';
+                noTimesMessage.textContent = 'Selecione um dia para ver os horários disponíveis.';
+                noTimesMessage.classList.remove('hidden');
+            });
+
+            nextWeekBtn.addEventListener('click', () => {
+                selectedWeekStart.setDate(selectedWeekStart.getDate() + 7);
+                renderWeek();
+                timeSlotsList.innerHTML = '';
+                noTimesMessage.textContent = 'Selecione um dia para ver os horários disponíveis.';
+                noTimesMessage.classList.remove('hidden');
+            });
+
+            backToServicesBtn.addEventListener('click', showServiceStep);
+            closeConfirmModal.addEventListener('click', () => confirmModal.classList.add('hidden'));
+            appointmentForm.addEventListener('submit', createAppointment);
+            myAppointmentsBtn.addEventListener('click', () => appointmentsModal.classList.remove('hidden'));
+            closeAppointmentsModal.addEventListener('click', () => {
+                appointmentsModal.classList.add('hidden');
+                appointmentsForm.reset();
+                myAppointmentsList.classList.add('hidden');
+            });
+            appointmentsForm.addEventListener('submit', fetchAppointments);
+
+            // Carrega os serviços ao iniciar a página
+            fetchServices();
+        });
+    </script>
+</body>
+
+</html>

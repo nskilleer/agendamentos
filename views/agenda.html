@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minha Agenda - AgendaFácil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.min.js"></script>
+    <header class="header">
+        <a href="/painelpro" class="logo">AgendaFácil</a>
+        <button id="menu-toggle" class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav id="nav-menu" class="nav-menu">
+            <a href="/painelpro" class="nav-link">Início</a>
+            <a href="/agenda" class="nav-link active">Agenda</a>
+            <a href="/config" class="nav-link">Configurações</a>
+            <button id="logout-button" class="button secondary">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1 class="text-3xl font-bold mb-6">Minha Agenda</h1>
+        <div class="card">
+            <div id="calendar"></div>
+        </div>
+
+        <div class="fab2-container">
+            <div id="btn-canceled-appointments" class="fab2 bg-red-500 hover:bg-red-600">
+                <i class="fas fa-calendar-times"></i>
+            </div>
+            <div id="btn-add-appointment" class="fab2">
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+
+        <div id="appointment-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-button" id="btn-cancel-modal">&times;</span>
+                <h2 id="modal-title" class="text-xl font-bold mb-4 card-heading">Detalhes do Agendamento
+                </h2>
+                <form id="appointment-form">
+                    <input type="hidden" id="modal-event-id" name="id">
+                    <div class="form-group">
+                        <label for="modal-cliente-nome" class="form-label">Cliente</label>
+                        <input type="text" id="modal-cliente-nome" name="cliente_nome" required class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-cliente-telefone" class="form-label">Telefone</label>
+                        <input type="text" id="modal-cliente-telefone" name="telefone" required class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-service" class="form-label">Serviço</label>
+                        <select id="modal-service" name="service" required class="form-input">
+                            <option value="">Selecione um serviço</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-start-date" class="form-label">Data</label>
+                        <input type="date" id="modal-start-date" name="start_date" required class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-start-time" class="form-label">Hora</label>
+                        <input type="time" id="modal-start-time" name="start_time" required class="form-input">
+                    </div>
+                    <div class="modal-buttons flex justify-between mt-4">
+                        <button type="button" id="btn-cancel-appointment"
+                            class="button btn-delete hidden">Cancelar</button>
+                        <div>
+                            <button type="button" id="btn-delete-modal"
+                                class="button btn-delete hidden">Excluir</button>
+                            <button type="submit" class="button btn-primary">Salvar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="canceled-appointments-modal" class="modal2 hidden2">
+            <div class="modal2-content modal2-content-lg">
+                <span class="close-button" id="btn-cancel-canceled-modal">&times;</span>
+                <h2 class="text-xl font-bold mb-4 card-heading">Agendamentos Cancelados</h2>
+                <div class="mb-4 flex gap-4">
+                    <input type="text" id="canceled-search-input" placeholder="Pesquisar por nome ou telefone..."
+                        class="flex-grow form-input">
+                    <button id="btn-search-canceled" class="button btn-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div id="canceled-appointments-list" class="space-y-4 max-h-96 overflow-y-auto">
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutButton = document.getElementById('logout-button');
+            const appointmentModal = document.getElementById('appointment-modal');
+            const appointmentForm = document.getElementById('appointment-form');
+            const modalTitle = document.getElementById('modal-title');
+            const modalEventId = document.getElementById('modal-event-id');
+            const modalClienteNome = document.getElementById('modal-cliente-nome');
+            const modalClienteTelefone = document.getElementById('modal-cliente-telefone');
+            const modalService = document.getElementById('modal-service');
+            const modalStartDate = document.getElementById('modal-start-date');
+            const modalStartTime = document.getElementById('modal-start-time');
+            const btnCancelModal = document.getElementById('btn-cancel-modal');
+            const btnDeleteModal = document.getElementById('btn-delete-modal');
+            const btnAddAppointment = document.getElementById('btn-add-appointment');
+            const btnCancelAppointment = document.getElementById('btn-cancel-appointment');
+
+
+            const menuToggle = document.getElementById('menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+
+            // Novos elementos para o modal de agendamentos cancelados
+            const canceledAppointmentsModal = document.getElementById('canceled-appointments-modal');
+            const btnCanceledAppointments = document.getElementById('btn-canceled-appointments');
+            const btnCancelCanceledModal = document.getElementById('btn-cancel-canceled-modal');
+            const canceledSearchInput = document.getElementById('canceled-search-input');
+            const btnSearchCanceled = document.getElementById('btn-search-canceled');
+            const canceledAppointmentsList = document.getElementById('canceled-appointments-list');
+
+            let calendar;
+            let professionalServices = [];
+            let currentEvent = null;
+
+            const handleAuthError = (response) => {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return true;
+                }
+                return false;
+            };
+
+            const getServices = async () => {
+                try {
+                    const response = await fetch('/api/servicos', { credentials: 'include' });
+                    if (handleAuthError(response)) return;
+                    const data = await response.json();
+                    if (data.success && Array.isArray(data.data)) {
+                        professionalServices = data.data;
+                        populateServiceDropdown(data.data);
+                    }
+                } catch (error) {
+                    console.error('Erro ao obter serviços:', error);
+                }
+            };
+
+            const populateServiceDropdown = (services) => {
+                modalService.innerHTML = '<option value="" disabled selected>Selecione um serviço</option>';
+                services.forEach(service => {
+                    const option = document.createElement('option');
+                    option.value = service._id;
+                    option.textContent = `${service.nome} (${service.duracao_min} min)`;
+                    option.dataset.duration = service.duracao_min;
+                    modalService.appendChild(option);
+                });
+            };
+
+            const fetchAppointments = async (info, successCallback, failureCallback) => {
+                try {
+                    const response = await fetch(`/api/agendamentos?start=${info.startStr}&end=${info.endStr}`, { credentials: 'include' });
+                    if (handleAuthError(response)) {
+                        failureCallback();
+                        return;
+                    }
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const events = data.data.map(agendamento => {
+                            const clientName = agendamento.title.split(' - ')[0];
+
+                            return {
+                                id: agendamento.id,
+                                title: clientName,
+                                start: agendamento.start,
+                                end: agendamento.end,
+                                extendedProps: agendamento.extendedProps,
+                            };
+                        });
+                        successCallback(events);
+                    } else {
+                        console.error('Erro ao buscar agendamentos:', data.message);
+                        failureCallback();
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar agendamentos:', error);
+                    failureCallback();
+                }
+            };
+
+            const openModal = (info) => {
+                modalEventId.value = '';
+                appointmentForm.reset();
+                modalTitle.textContent = 'Novo Agendamento';
+                btnDeleteModal.classList.add('hidden');
+                btnCancelAppointment.classList.add('hidden');
+                currentEvent = null;
+
+                if (info.event) {
+                    currentEvent = info.event;
+                    modalTitle.textContent = 'Editar Agendamento';
+                    modalEventId.value = currentEvent.id;
+                    modalClienteNome.value = currentEvent.title;
+                    modalClienteTelefone.value = currentEvent.extendedProps.telefone;
+                    modalService.value = currentEvent.extendedProps.serviceId;
+                    modalStartDate.value = new Date(currentEvent.start).toISOString().slice(0, 10);
+                    modalStartTime.value = new Date(currentEvent.start).toISOString().slice(11, 16);
+                    btnDeleteModal.classList.remove('hidden');
+                    btnCancelAppointment.classList.remove('hidden');
+                } else if (info.dateStr) {
+                    modalStartDate.value = info.dateStr.slice(0, 10);
+                    modalStartTime.value = info.dateStr.slice(11, 16);
+                }
+
+                appointmentModal.classList.remove('hidden');
+            };
+
+            const closeModal = () => {
+                appointmentModal.classList.add('hidden');
+                appointmentForm.reset();
+            };
+
+            // Funções para o novo modal de cancelados
+            const openCanceledModal = () => {
+                canceledAppointmentsModal.classList.remove('hidden2');
+                fetchCanceledAppointments(); // Busca e exibe todos ao abrir
+            };
+
+            const closeCanceledModal = () => {
+                canceledAppointmentsModal.classList.add('hidden2');
+                canceledAppointmentsList.innerHTML = ''; // Limpa a lista ao fechar
+                canceledSearchInput.value = ''; // Limpa o campo de busca
+            };
+
+            const fetchCanceledAppointments = async (query = '') => {
+                canceledAppointmentsList.innerHTML = '<p class="text-center text-gray-500">Carregando...</p>';
+                try {
+                    let url = '/api/agendamentos-cancelados';
+                    if (query) {
+                        url += `?q=${encodeURIComponent(query)}`;
+                    }
+
+                    const response = await fetch(url, { credentials: 'include' });
+                    if (handleAuthError(response)) return;
+                    const data = await response.json();
+
+                    if (data.success) {
+                        displayCanceledAppointments(data.data);
+                    } else {
+                        canceledAppointmentsList.innerHTML = `<p class="text-center text-red-500">Erro: ${data.message}</p>`;
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar agendamentos cancelados:', error);
+                    canceledAppointmentsList.innerHTML = '<p class="text-center text-red-500">Erro na comunicação com o servidor.</p>';
+                }
+            };
+
+            const displayCanceledAppointments = (appointments) => {
+                canceledAppointmentsList.innerHTML = ''; // Limpa a lista anterior
+                if (appointments.length === 0) {
+                    canceledAppointmentsList.innerHTML = '<p class="text-center text-gray-500">Nenhum agendamento cancelado encontrado.</p>';
+                    return;
+                }
+
+                // Ordena os agendamentos por data e hora (do mais recente para o mais antigo)
+                appointments.sort((a, b) => new Date(b.start) - new Date(a.start));
+
+                appointments.forEach(agendamento => {
+                    const date = new Date(agendamento.start).toLocaleDateString('pt-BR');
+                    const time = new Date(agendamento.start).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+                    const item = document.createElement('div');
+                    item.classList.add('appointment2-item', 'bg-gray-100', 'p-4', 'rounded-md', 'shadow-sm');
+                    item.innerHTML = `
+                        <p><strong>Cliente:</strong> ${agendamento.nomeCliente}</p>
+                        <p><strong>Telefone:</strong> ${agendamento.telefoneCliente}</p>
+                        <p><strong>Serviço:</strong> ${agendamento.servico}</p>
+                        <p><strong>Data:</strong> ${date} às ${time}</p>
+                    `;
+                    canceledAppointmentsList.appendChild(item);
+                });
+            };
+
+
+            const createAppointment = async (appointmentData) => {
+                try {
+                    const response = await fetch('/api/agendamentos', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(appointmentData),
+                        credentials: 'include'
+                    });
+                    if (handleAuthError(response)) return;
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert(data.message);
+                        closeModal();
+                        calendar.refetchEvents();
+                    } else {
+                        alert('Erro: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Erro ao criar agendamento:', error);
+                    alert('Erro na comunicação com o servidor.');
+                }
+            };
+
+            const updateAppointment = async (id, appointmentData, revertFunc = null) => {
+                try {
+                    const response = await fetch(`/api/update_appointment/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(appointmentData),
+                        credentials: 'include'
+                    });
+                    if (handleAuthError(response)) return;
+                    const data = await response.json();
+
+                    if (data.success) {
+                        if (!revertFunc) {
+                            alert(data.message);
+                        }
+                        closeModal();
+                        calendar.refetchEvents();
+                    } else {
+                        alert('Erro ao salvar agendamento: ' + data.message);
+                        if (revertFunc) {
+                            revertFunc();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao salvar agendamento:', error);
+                    alert('Erro na comunicação com o servidor.');
+                    if (revertFunc) {
+                        revertFunc();
+                    }
+                }
+            };
+
+            const saveAppointment = async (e) => {
+                e.preventDefault();
+                const startDate = new Date(`${modalStartDate.value}T${modalStartTime.value}:00`);
+                const selectedService = professionalServices.find(s => s._id === modalService.value);
+
+                if (!selectedService) {
+                    alert('Por favor, selecione um serviço válido.');
+                    return;
+                }
+
+                const endDate = new Date(startDate.getTime() + selectedService.duracao_min * 60 * 1000);
+
+                const appointmentData = {
+                    nomeCliente: modalClienteNome.value,
+                    serviceId: modalService.value,
+                    start: startDate.toISOString(),
+                    end: endDate.toISOString(),
+                    duracao_min: selectedService.duracao_min,
+                    telefoneCliente: modalClienteTelefone.value,
+                };
+
+                if (currentEvent) {
+                    await updateAppointment(currentEvent.id, appointmentData);
+                } else {
+                    await createAppointment(appointmentData);
+                }
+            };
+
+            const cancelAppointment = async () => {
+                if (!currentEvent || !confirm('Tem certeza que deseja cancelar este agendamento?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/cancel_appointment_profissional`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ appointmentId: currentEvent.id }),
+                        credentials: 'include'
+                    });
+                    if (handleAuthError(response)) return;
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert(data.message);
+                        closeModal();
+                        calendar.refetchEvents();
+                    } else {
+                        alert('Erro ao cancelar: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Erro ao cancelar agendamento:', error);
+                    alert('Erro na comunicação com o servidor.');
+                }
+            };
+
+
+            const deleteAppointment = async () => {
+                if (!currentEvent || !confirm('Tem certeza que deseja excluir este agendamento?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/agendamentos/${currentEvent.id}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    if (handleAuthError(response)) return;
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert(data.message);
+                        closeModal();
+                        calendar.refetchEvents();
+                    } else {
+                        alert('Erro ao excluir: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir agendamento:', error);
+                    alert('Erro na comunicação com o servidor.');
+                }
+            };
+
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await fetch('/api/logout', { method: 'POST' });
+                } catch (error) {
+                    console.error('Erro ao fazer logout:', error);
+                } finally {
+                    window.location.href = '/login';
+                }
+            });
+
+            appointmentForm.addEventListener('submit', saveAppointment);
+            btnCancelModal.addEventListener('click', closeModal);
+            btnDeleteModal.addEventListener('click', deleteAppointment);
+            btnCancelAppointment.addEventListener('click', cancelAppointment);
+            btnAddAppointment.addEventListener('click', () => openModal({}));
+
+            // Event listeners para o novo modal de agendamentos cancelados
+            btnCanceledAppointments.addEventListener('click', openCanceledModal);
+            btnCancelCanceledModal.addEventListener('click', closeCanceledModal);
+            btnSearchCanceled.addEventListener('click', () => {
+                const query = canceledSearchInput.value;
+                fetchCanceledAppointments(query);
+            });
+
+            canceledSearchInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const query = canceledSearchInput.value;
+                    fetchCanceledAppointments(query);
+                }
+            });
+
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('open');
+            });
+
+            const calendarEl = document.getElementById('calendar');
+
+            const getInitialView = () => {
+                return window.innerWidth < 768 ? 'timeGridDay' : 'timeGridWeek';
+            };
+
+            const getHeaderToolbar = () => {
+                if (window.innerWidth < 768) {
+                    return {
+                        left: 'prev,next',
+                        center: '',
+                        right: 'title',
+                    };
+                } else {
+                    return {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'mes,semana,dia'
+                    };
+                }
+            };
+
+            const getFooterToolbar = () => {
+                if (window.innerWidth < 768) {
+                    return {
+                        left: 'today',
+                        center: 'mes,semana,dia',
+                        right: '',
+                    };
+                } else {
+                    return false;
+                }
+            };
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: getInitialView(),
+                locale: 'pt-br',
+                allDayText: 'Dia Inteiro',
+                navLinks: true,
+                navLinkDayClick: 'timeGridDay',
+                slotDuration: '00:15:00',
+                slotEventOverlap: false,
+                customButtons: {
+                    mes: {
+                        text: 'Mês',
+                        click: function () {
+                            calendar.changeView('dayGridMonth');
+                        }
+                    },
+                    semana: {
+                        text: 'Semana',
+                        click: function () {
+                            calendar.changeView('timeGridWeek');
+                        }
+                    },
+                    dia: {
+                        text: 'Dia',
+                        click: function () {
+                            calendar.changeView('timeGridDay');
+                        }
+                    },
+                    today: {
+                        text: 'Hoje',
+                        click: function () {
+                            calendar.today();
+                        }
+                    }
+                },
+                headerToolbar: getHeaderToolbar(),
+                footerToolbar: getFooterToolbar(),
+                editable: true,
+                dayMaxEvents: true,
+                events: fetchAppointments,
+
+                eventClick: (info) => {
+                    openModal(info);
+                },
+
+                dateClick: (info) => {
+                    if (info.view.type === 'timeGridDay' || info.view.type === 'timeGridWeek') {
+                        openModal(info);
+                    }
+                },
+
+                eventDrop: async (info) => {
+                    const event = info.event;
+                    const selectedService = professionalServices.find(s => s._id === event.extendedProps.serviceId);
+
+                    const startDate = new Date(event.start);
+                    const endDate = new Date(startDate.getTime() + selectedService.duracao_min * 60 * 1000);
+
+                    const updatedAppointment = {
+                        nomeCliente: event.title,
+                        serviceId: event.extendedProps.serviceId,
+                        start: startDate.toISOString(),
+                        end: endDate.toISOString(),
+                        telefoneCliente: event.extendedProps.telefone,
+                    };
+                    await updateAppointment(event.id, updatedAppointment, info.revert);
+                },
+            });
+            calendar.render();
+
+            window.addEventListener('resize', () => {
+                calendar.setOption('initialView', getInitialView());
+                calendar.setOption('headerToolbar', getHeaderToolbar());
+                calendar.setOption('footerToolbar', getFooterToolbar());
+            });
+
+            getServices();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AgendaFácil - Configurações</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <header class="header">
+        <a href="/painelpro" class="logo">AgendaFácil</a>
+        <button id="menu-toggle" class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav id="nav-menu" class="nav-menu">
+            <a href="/painelpro" class="nav-link">Início</a>
+            <a href="/agenda" class="nav-link">Agenda</a>
+            <a href="/config" class="nav-link active">Configurações</a>
+            <button id="logout-button" class="btn-secondary">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1 class="text-3xl font-bold mb-6">Configurações</h1>
+
+        <div class="content-cards-grid">
+            <section class="card">
+                <h2>Horários de Funcionamento</h2>
+                <form id="form-horarios" class="form-grid">
+                    <div class="form-group">
+                        <label for="dia-semana">Dia da Semana</label>
+                        <select id="dia-semana" required>
+                            <option value="">Selecione</option>
+                            <option value="domingo">Domingo</option>
+                            <option value="segunda">Segunda-feira</option>
+                            <option value="terca">Terça-feira</option>
+                            <option value="quarta">Quarta-feira</option>
+                            <option value="quinta">Quinta-feira</option>
+                            <option value="sexta">Sexta-feira</option>
+                            <option value="sabado">Sábado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="hora-abertura">Horário de Início</label>
+                        <input type="time" id="hora-abertura" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hora-fechamento">Horário de Fim</label>
+                        <input type="time" id="hora-fechamento" required>
+                    </div>
+                    <button type="submit" class="button btn-add">Salvar Horário</button>
+                </form>
+                <div id="horarios-message" class="message hidden mt-4"></div>
+                <ul id="lista-horarios" class="mt-4 list-container"></ul>
+            </section>
+
+            <section class="card">
+                <h2>Serviços</h2>
+                <button id="btn-add-servico" class="button btn-add">Adicionar Novo Serviço</button>
+                <div id="servicos-message" class="message hidden mt-4"></div>
+                <ul id="lista-servicos" class="mt-4 list-container"></ul>
+            </section>
+        </div>
+    </main>
+
+    <div id="modal-servico" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button" id="btn-cancelar-servico">&times;</span>
+            <h2 class="card-heading">Adicionar/Editar Serviço</h2>
+            <form id="form-servico">
+                <div class="form-group">
+                    <label for="servico-nome">Nome do Serviço</label>
+                    <input type="text" id="servico-nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="servico-duracao">Duração (minutos)</label>
+                    <input type="number" id="servico-duracao" name="duracao" required min="5" step="5">
+                </div>
+                <div class="form-group">
+                    <label for="servico-valor">Valor (R$)</label>
+                    <input type="number" id="servico-valor" name="valor" required min="0" step="0.01">
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="button btn-add">Salvar Serviço</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Adicionado código para o menu responsivo
+            const menuToggle = document.getElementById('menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('open');
+            });
+
+            const logoutButton = document.getElementById('logout-button');
+            const formHorarios = document.getElementById('form-horarios');
+            const listaHorarios = document.getElementById('lista-horarios');
+            const horariosMessageElement = document.getElementById('horarios-message');
+
+            const btnAddServico = document.getElementById('btn-add-servico');
+            const formServico = document.getElementById('form-servico');
+            const btnCancelarServico = document.getElementById('btn-cancelar-servico');
+            const modalServico = document.getElementById('modal-servico');
+            const listaServicos = document.getElementById('lista-servicos');
+            const servicosMessageElement = document.getElementById('servicos-message');
+
+            const diasSemanaExibicao = {
+                'domingo': 'Domingo',
+                'segunda': 'Segunda-feira',
+                'terca': 'Terça-feira',
+                'quarta': 'Quarta-feira',
+                'quinta': 'Quinta-feira',
+                'sexta': 'Sexta-feira',
+                'sabado': 'Sábado'
+            };
+
+            const showMessage = (element, message, isError = false) => {
+                element.textContent = message;
+                element.className = `message ${isError ? 'error' : 'success'}`;
+                element.classList.remove('hidden');
+            };
+
+            const hideMessage = (element) => {
+                element.classList.add('hidden');
+            };
+
+            const handleAuthError = (response) => {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return true;
+                }
+                return false;
+            };
+
+            const carregarHorarios = async () => {
+                listaHorarios.innerHTML = '';
+                showMessage(horariosMessageElement, 'Horários carregados.', false);
+
+                try {
+                    const response = await fetch('/api/get_horarios_funcionamento', { credentials: 'include' });
+                    if (handleAuthError(response)) return;
+                    const result = await response.json();
+
+                    if (result.success && result.data.length > 0) {
+                        hideMessage(horariosMessageElement);
+                        result.data.forEach(horario => {
+                            const li = document.createElement('li');
+                            li.className = 'list-item';
+                            li.innerHTML = `
+                                <span>${diasSemanaExibicao[horario.dia_semana]} - ${horario.hora_abertura} às ${horario.hora_fechamento}</span>
+                                <button class="btn-delete" data-id="${horario._id}">&times;</button>
+                            `;
+                            listaHorarios.appendChild(li);
+                        });
+                    } else {
+                        showMessage(horariosMessageElement, 'Nenhum horário de funcionamento cadastrado.', false);
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar horários:', error);
+                    showMessage(horariosMessageElement, 'Erro de rede ao carregar horários.', true);
+                }
+            };
+
+            const carregarServicos = async () => {
+                listaServicos.innerHTML = '';
+                showMessage(servicosMessageElement, 'Serviços garregados.', false);
+
+                try {
+                    const response = await fetch('/api/servicos', { credentials: 'include' });
+                    if (handleAuthError(response)) return;
+                    const result = await response.json();
+
+                    if (result.success && result.data.length > 0) {
+                        hideMessage(servicosMessageElement);
+                        result.data.forEach(servico => {
+                            const li = document.createElement('li');
+                            li.className = 'list-item';
+                            li.innerHTML = `
+                                <span>${servico.nome} - ${servico.duracao_min} min - R$${servico.preco.toFixed(2)}</span>
+                                <button class="btn-delete" data-id="${servico._id}">&times;</button>
+                            `;
+                            listaServicos.appendChild(li);
+                        });
+                    } else {
+                        showMessage(servicosMessageElement, 'Nenhum serviço cadastrado.', false);
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar serviços:', error);
+                    showMessage(servicosMessageElement, 'Erro de rede ao carregar serviços.', true);
+                }
+            };
+
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await fetch('/api/logout', { method: 'POST' });
+                } catch (error) {
+                    console.error('Erro ao fazer logout:', error);
+                } finally {
+                    window.location.href = '/login';
+                }
+            });
+
+            formHorarios.addEventListener('submit', async e => {
+                e.preventDefault();
+                hideMessage(horariosMessageElement);
+
+                const dia_semana = document.getElementById('dia-semana').value;
+                const hora_abertura = document.getElementById('hora-abertura').value;
+                const hora_fechamento = document.getElementById('hora-fechamento').value;
+
+                if (hora_fechamento <= hora_abertura) {
+                    showMessage(horariosMessageElement, 'O horário de fechamento deve ser maior que o de abertura.', true);
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/set_horario_funcionamento', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ dia_semana, hora_abertura, hora_fechamento }),
+                        credentials: 'include'
+                    });
+                    if (handleAuthError(response)) return;
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showMessage(horariosMessageElement, 'Horário salvo com sucesso!', false);
+                        formHorarios.reset();
+                        carregarHorarios();
+                    } else {
+                        showMessage(horariosMessageElement, result.message || 'Erro ao salvar horário.', true);
+                    }
+                } catch (error) {
+                    console.error('Erro ao salvar horário:', error);
+                    showMessage(horariosMessageElement, 'Erro de rede ao salvar horário.', true);
+                }
+            });
+
+            listaHorarios.addEventListener('click', async e => {
+                if (e.target.classList.contains('btn-delete')) {
+                    const id = e.target.getAttribute('data-id');
+                    if (confirm('Tem certeza que deseja excluir este horário?')) {
+                        try {
+                            const response = await fetch(`/api/delete_horario_funcionamento/${id}`, {
+                                method: 'DELETE',
+                                credentials: 'include'
+                            });
+                            if (handleAuthError(response)) return;
+                            const result = await response.json();
+
+                            if (result.success) {
+                                showMessage(horariosMessageElement, 'Horário excluído com sucesso!', false);
+                                carregarHorarios();
+                            } else {
+                                showMessage(horariosMessageElement, result.message || 'Erro ao excluir horário.', true);
+                            }
+                        } catch (error) {
+                            console.error('Erro ao excluir horário:', error);
+                            showMessage(horariosMessageElement, 'Erro de rede ao excluir horário.', true);
+                        }
+                    }
+                }
+            });
+
+            btnAddServico.addEventListener('click', () => {
+                formServico.reset();
+                modalServico.classList.remove('hidden');
+                hideMessage(servicosMessageElement);
+            });
+
+            btnCancelarServico.addEventListener('click', () => {
+                modalServico.classList.add('hidden');
+            });
+
+            formServico.addEventListener('submit', async e => {
+                e.preventDefault();
+
+                const nome = document.getElementById('servico-nome').value.trim();
+                const duracao_min = document.getElementById('servico-duracao').value;
+                const preco = document.getElementById('servico-valor').value;
+
+                try {
+                    const response = await fetch('/api/add_servico', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nome, duracao_min: parseInt(duracao_min), preco: parseFloat(preco) }),
+                        credentials: 'include'
+                    });
+                    if (handleAuthError(response)) return;
+                    const result = await response.json();
+
+                    if (result.success) {
+                        modalServico.classList.add('hidden');
+                        showMessage(servicosMessageElement, 'Serviço adicionado com sucesso!', false);
+                        formServico.reset();
+                        carregarServicos();
+                    } else {
+                        showMessage(servicosMessageElement, result.message || 'Erro ao salvar serviço.', true);
+                    }
+                } catch (error) {
+                    console.error('Erro ao salvar serviço:', error);
+                    showMessage(servicosMessageElement, 'Erro de rede ao salvar serviço.', true);
+                }
+            });
+
+            listaServicos.addEventListener('click', async e => {
+                if (e.target.classList.contains('btn-delete')) {
+                    const id = e.target.getAttribute('data-id');
+                    if (confirm('Tem certeza que deseja excluir este serviço?')) {
+                        try {
+                            const response = await fetch(`/api/delete_servico/${id}`, {
+                                method: 'DELETE',
+                                credentials: 'include'
+                            });
+                            if (handleAuthError(response)) return;
+                            const result = await response.json();
+
+                            if (result.success) {
+                                showMessage(servicosMessageElement, 'Serviço excluído com sucesso!', false);
+                                carregarServicos();
+                            } else {
+                                showMessage(servicosMessageElement, result.message || 'Erro ao excluir serviço.', true);
+                            }
+                        } catch (error) {
+                            console.error('Erro ao excluir serviço:', error);
+                            showMessage(servicosMessageElement, 'Erro de rede ao excluir serviço.', true);
+                        }
+                    }
+                }
+            });
+
+            carregarHorarios();
+            carregarServicos();
+        });
+    </script>
+</body>
+
+</html>
