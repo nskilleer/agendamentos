@@ -5,15 +5,6 @@ const session = require('express-session');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
-// Rotas para servir arquivos HTML diretamente
-const htmlViews = [
-    'login', 'cadastro', 'agenda', 'painelcli', 'painelpro', 'config'
-];
-htmlViews.forEach(view => {
-    app.get(`/${view}`, (req, res) => {
-        res.sendFile(path.join(__dirname, 'views', `${view}.html`));
-    });
-});
 
 // =====================================================
 // Importa middlewares customizados
@@ -23,6 +14,16 @@ const { dbMiddleware, connectDB } = require('./middlewares/dbMiddleware');
 const errorHandler = require('./middlewares/errorMiddleware');
 
 const app = express();
+
+// Rotas para servir arquivos HTML diretamente
+const htmlViews = [
+    'login', 'cadastro', 'agenda', 'painelcli', 'painelpro', 'config'
+];
+htmlViews.forEach(view => {
+    app.get(`/${view}`, (req, res) => {
+        res.sendFile(path.join(__dirname, 'views', `${view}.html`));
+    });
+});
 
 // =====================================================
 // Middlewares essenciais para o Express
