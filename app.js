@@ -1,5 +1,3 @@
-// Arquivo: app.js
-
 const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
@@ -27,8 +25,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // =====================================================
 // Configuração para servir arquivos estáticos
-// ⬅️ Esta linha é o suficiente para todas as suas páginas HTML, CSS, JS, etc.
-//    Ela serve automaticamente arquivos como `/cadastro.html`, `/painelpro.html`, etc.
 // =====================================================
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -63,44 +59,61 @@ app.use(session({
 // Middlewares Globais
 // =====================================================
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3333',
+    origin: process.env.CORS_ORIGIN || '*', // Permitir qualquer origem
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 };
 app.use(cors(corsOptions));
 
+// Configuração de CSP flexível para desenvolvimento
+const cspDirectives = {
+    defaultSrc: ["'self'"],
+    scriptSrc: [
+        "'self'",
+        'https://cdn.tailwindcss.com',
+        'https://cdn.jsdelivr.net',
+        'https://code.jquery.com',
+        "'unsafe-inline'"
+    ],
+    styleSrc: [
+        "'self'",
+        'https://cdn.tailwindcss.com',
+        'https://cdn.jsdelivr.net',
+        'https://cdnjs.cloudflare.com',
+        'https://fonts.googleapis.com',
+        "'unsafe-inline'"
+    ],
+    fontSrc: [
+        "'self'",
+        'https://fonts.gstatic.com',
+        'https://cdnjs.cloudflare.com',
+        'data:'
+    ],
+    imgSrc: ["'self'", 'data:', 'https:'],
+    connectSrc: [
+        "'self'",
+        process.env.CORS_ORIGIN || 'http://localhost:3333',
+        'https://*.tiles.mapbox.com',
+        'https://api.mapbox.com'
+    ],
+    frameSrc: ["'self'"],
+    objectSrc: ["'none'"],
+    mediaSrc: ["'self'"],
+};
+
+if (!isProduction) {
+    // Permite eval() e websockets em desenvolvimento
+    cspDirectives.scriptSrc.push("'unsafe-eval'");
+    cspDirectives.connectSrc.push('ws://localhost:*/');
+}
+
 app.use(helmet({
     contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: [
-                "'self'",
-                'https://cdn.tailwindcss.com/',
-                'https://cdn.jsdelivr.net/',
-                "'unsafe-inline'"
-            ],
-            styleSrc: [
-                "'self'",
-                'https://cdn.tailwindcss.com/',
-                'https://cdn.jsdelivr.net/',
-                'https://cdnjs.cloudflare.com/',
-                'https://fonts.googleapis.com/',
-                "'unsafe-inline'"
-            ],
-            fontSrc: [
-                "'self'",
-                'https://fonts.gstatic.com/',
-                'https://cdnjs.cloudflare.com/',
-                'data:'
-            ],
-            imgSrc: ["'self'", 'data:'],
-            connectSrc: [
-                "'self'",
-                process.env.CORS_ORIGIN || 'http://localhost:3333'
-            ],
-        },
+        directives: cspDirectives,
+        reportOnly: false,
     },
+    crossOriginEmbedderPolicy: false,
 }));
 
 // =====================================================
@@ -116,15 +129,17 @@ app.use('/api', apiRoutes);
 
 // =====================================================
 // Middleware para tratar rotas não encontradas
-// Isso ajuda a evitar o "Cannot GET" para rotas de páginas
 // =====================================================
 app.use((req, res, next) => {
-    // Se a requisição não for de API e não for um arquivo estático,
-    // redirecione para a página principal (login.html).
-    if (!req.path.startsWith('/api') && !req.path.includes('.')) {
+    // Permite acesso direto a arquivos HTML
+    if (req.path.endsWith('.html') || req.path.includes('.')) {
+        return next();
+    }
+
+    if (!req.path.startsWith('/api')) {
         res.sendFile(path.join(__dirname, 'public', 'login.html'));
     } else {
-        next(); // Continua para outros middlewares ou rotas
+        res.status(404).json({ success: false, message: 'Rota não encontrada' });
     }
 });
 
