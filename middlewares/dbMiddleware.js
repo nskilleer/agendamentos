@@ -12,10 +12,8 @@ const connectDB = async () => {
         }
 
         logger.info('Tentando conectar ao MongoDB...');
-        await mongoose.connect(mongoURI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        // Removendo as opções obsoletas
+        await mongoose.connect(mongoURI);
 
         logger.info('Conexão com MongoDB estabelecida com sucesso!');
 
