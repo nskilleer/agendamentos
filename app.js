@@ -7,8 +7,6 @@ const helmet = require('helmet');
 const path = require('path');
 
 
-
-
 // =====================================================
 // Importa middlewares customizados
 // =====================================================
@@ -18,7 +16,7 @@ const errorHandler = require('./middlewares/errorMiddleware');
 
 const app = express();
 
-// Rotas para servir arquivos HTML diretamente
+// Rotas para servir arquivos HTML diretamente da pasta 'views'
 const htmlViews = [
     'login', 'cadastro', 'agenda', 'painelcli', 'painelpro', 'config'
 ];
@@ -26,6 +24,11 @@ htmlViews.forEach(view => {
     app.get(`/${view}`, (req, res) => {
         res.sendFile(path.join(__dirname, 'views', `${view}.html`));
     });
+});
+
+// Rota principal '/' serve o login.html da pasta 'views'
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
 // =====================================================
@@ -115,26 +118,6 @@ app.use('/api', apiRoutes);
 // =====================================================
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
-});
-
-// Rotas para servir arquivos HTML diretamente
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'login.html'));
-});
-app.get('/cadastro', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'cadastro.html'));
-});
-app.get('/agenda', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'agenda.html'));
-});
-app.get('/painelcli', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'painelcli.html'));
-});
-app.get('/painelpro', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'painelpro.html'));
-});
-app.get('/config', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'config.html'));
 });
 
 // Middleware de erro no final da cadeia.
