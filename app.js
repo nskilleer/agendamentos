@@ -5,20 +5,19 @@ const session = require('express-session');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
-// Rotas para servir arquivos HTML diretamente
-const htmlViews = [
-    'login', 'cadastro', 'agenda', 'painelcli', 'painelpro', 'config'
-];
-htmlViews.forEach(view => {
-    app.get(`/${view}`, (req, res) => {
-        res.sendFile(path.join(__dirname, 'views', `${view}.html`));
-    });
-});
+const MongoStore = require('connect-mongo');
 
-// Rota principal '/' serve o login.html da pasta 'views'
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'login.html'));
-});
+// =====================================================
+// Importa middlewares customizados
+// =====================================================
+const { requireAuth, checkUserType } = require('./middlewares/authMiddleware');
+const { dbMiddleware, connectDB } = require('./middlewares/dbMiddleware');
+const errorHandler = require('./middlewares/errorMiddleware');
+
+// =====================================================
+// DECLARAÇÃO DO APLICATIVO EXPRESS
+// =====================================================
+const app = express();
 
 // =====================================================
 // Middlewares essenciais para o Express
@@ -27,14 +26,31 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // =====================================================
+// Configuração para servir arquivos estáticos
+// ⬅️ Esta linha é o suficiente para todas as suas páginas HTML, CSS, JS, etc.
+//    Ela serve automaticamente arquivos como `/cadastro.html`, `/painelpro.html`, etc.
+// =====================================================
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Rota principal '/' para a página de login
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// =====================================================
 // Configuração do Express-Session
-// ⚠️ IMPORTANTE: Em produção, use um store persistente (Redis ou MongoStore)
 // =====================================================
 const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
     secret: process.env.SESSION_SECRET || 'nana96393898nana',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        dbName: 'sessions',
+        collectionName: 'sessions',
+        ttl: 24 * 60 * 60,
+    }),
     cookie: {
         secure: isProduction,
         httpOnly: true,
@@ -90,13 +106,7 @@ app.use(helmet({
 // =====================================================
 // Middleware de Conexão com o Banco de Dados (MongoDB)
 // =====================================================
-// No ambiente serverless, evite reconectar a cada requisição
 app.use(dbMiddleware);
-
-// =====================================================
-// Configuração para servir arquivos estáticos
-// =====================================================
-app.use(express.static(path.join(__dirname, 'public')));
 
 // =====================================================
 // Rotas da API
@@ -107,12 +117,6 @@ app.use('/api', apiRoutes);
 // =====================================================
 // Middleware de erro (último a ser chamado)
 // =====================================================
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'login.html'));
-});
-
-// Middleware de erro no final da cadeia.
-// Ele deve ser o último `app.use` a ser chamado.
 app.use(errorHandler);
 
 module.exports = app;

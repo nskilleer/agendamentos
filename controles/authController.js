@@ -43,9 +43,9 @@ const authController = {
             // Redirecionamento dinâmico baseado no tipo de usuário
             let redirectUrl;
             if (user.userType === 'profissional') {
-                redirectUrl = '/painelpro';
+                redirectUrl = '/painelpro.html'; // ⬅️ CORRIGIDO!
             } else if (user.userType === 'cliente') {
-                redirectUrl = '/painelcli';
+                redirectUrl = '/painelcli.html'; // ⬅️ CORRIGIDO!
             } else {
                 redirectUrl = '/'; // Redirecionamento padrão para outros tipos
             }
@@ -67,13 +67,12 @@ const authController = {
      */
     register: async (req, res) => {
         logger.info('Tentativa de registro', { email: req.body.email });
-        const { nome, email, telefone, senha, userType } = req.body; // userType é pego do formulário
+        const { nome, email, telefone, senha, userType } = req.body;
 
         if (!nome || !email || !senha || !userType) {
             return renderError(res, 'Nome, e-mail, senha e tipo de usuário são obrigatórios para o registro.');
         }
 
-        // Verificação extra para userType
         const validUserTypes = ['profissional', 'cliente'];
         if (!validUserTypes.includes(userType)) {
             return renderError(res, 'Tipo de usuário inválido.');
@@ -96,7 +95,6 @@ const authController = {
                 userType: userType
             });
 
-            // Faça o login automático e configure a sessão após o registro
             req.session.logged_in = true;
             req.session.user_id = newUser._id;
             req.session.user_name = newUser.nome;
@@ -107,9 +105,9 @@ const authController = {
             // Redirecionamento dinâmico baseado no tipo de usuário
             let redirectUrl;
             if (newUser.userType === 'profissional') {
-                redirectUrl = '/painelpro';
+                redirectUrl = '/painelpro.html'; // ⬅️ CORRIGIDO!
             } else if (newUser.userType === 'cliente') {
-                redirectUrl = '/painelcli';
+                redirectUrl = '/painelcli.html'; // ⬅️ CORRIGIDO!
             } else {
                 redirectUrl = '/';
             }
