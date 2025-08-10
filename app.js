@@ -25,102 +25,90 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// =====================================================
+// Configuração para servir arquivos estáticos
+// ⬅️ Esta linha é o suficiente para todas as suas páginas HTML na pasta 'public'
+// =====================================================
+app.use(express.static(path.join(__dirname, 'public')));
 
 // =====================================================
-// Rotas para servir arquivos HTML diretamente
+// Rota principal '/' serve o login.html
+// ⬅️ Mantenha apenas esta rota para o endereço principal
 // =====================================================
-const htmlViews = [
-    'login', 'cadastro', 'agenda', 'painelcli', 'painelpro', 'config'
-];
-htmlViews.forEach(view => {
-    app.get(`/${view}`, (req, res) => {
-        res.sendFile(path.join(__dirname, 'views', `${public}.html`));
-    });
-});
-
-
-// Rota principal '/' serve o login.html da pasta 'views'
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
-
 
 // =====================================================
 // Configuração do Express-Session
-// ⚠️ AGORA USANDO MongoStore para sessões persistentes
 // =====================================================
 const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'nana96393898nana',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ // ⬅️ Nova configuração
-        mongoUrl: process.env.MONGODB_URI,
-        dbName: 'sessions', // Nome para o banco de sessões
-        collectionName: 'sessions', // Nome da coleção de sessões
-        ttl: 24 * 60 * 60, // Tempo de vida da sessão (em segundos)
-    }),
-    cookie: {
-        secure: isProduction,
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
-        ...(isProduction ? { sameSite: 'None' } : {}),
-    }
+    secret: process.env.SESSION_SECRET || 'nana96393898nana',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        dbName: 'sessions',
+        collectionName: 'sessions',
+        ttl: 24 * 60 * 60,
+    }),
+    cookie: {
+        secure: isProduction,
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        ...(isProduction ? { sameSite: 'None' } : {}),
+    }
 }));
 
 // =====================================================
 // Middlewares Globais
 // =====================================================
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3333',
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3333',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
 };
 app.use(cors(corsOptions));
 
 app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: [
-                "'self'",
-                'https://cdn.tailwindcss.com/',
-                'https://cdn.jsdelivr.net/',
-                "'unsafe-inline'"
-            ],
-            styleSrc: [
-                "'self'",
-                'https://cdn.tailwindcss.com/',
-                'https://cdn.jsdelivr.net/',
-                'https://cdnjs.cloudflare.com/',
-                'https://fonts.googleapis.com/',
-                "'unsafe-inline'"
-            ],
-            fontSrc: [
-                "'self'",
-                'https://fonts.gstatic.com/',
-                'https://cdnjs.cloudflare.com/',
-                'data:'
-            ],
-            imgSrc: ["'self'", 'data:'],
-            connectSrc: [
-                "'self'",
-                process.env.CORS_ORIGIN || 'http://localhost:3333'
-            ],
-        },
-    },
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: [
+                "'self'",
+                'https://cdn.tailwindcss.com/',
+                'https://cdn.jsdelivr.net/',
+                "'unsafe-inline'"
+            ],
+            styleSrc: [
+                "'self'",
+                'https://cdn.tailwindcss.com/',
+                'https://cdn.jsdelivr.net/',
+                'https://cdnjs.cloudflare.com/',
+                'https://fonts.googleapis.com/',
+                "'unsafe-inline'"
+            ],
+            fontSrc: [
+                "'self'",
+                'https://fonts.gstatic.com/',
+                'https://cdnjs.cloudflare.com/',
+                'data:'
+            ],
+            imgSrc: ["'self'", 'data:'],
+            connectSrc: [
+                "'self'",
+                process.env.CORS_ORIGIN || 'http://localhost:3333'
+            ],
+        },
+    },
 }));
 
 // =====================================================
 // Middleware de Conexão com o Banco de Dados (MongoDB)
 // =====================================================
 app.use(dbMiddleware);
-
-// =====================================================
-// Configuração para servir arquivos estáticos
-// =====================================================
-app.use(express.static(path.join(__dirname, 'public')));
 
 // =====================================================
 // Rotas da API
