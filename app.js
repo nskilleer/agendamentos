@@ -27,14 +27,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // =====================================================
 // Configuração para servir arquivos estáticos
-// ⬅️ Esta linha é o suficiente para todas as suas páginas HTML na pasta 'public'
+// ⬅️ Esta linha é o suficiente para todas as suas páginas HTML, CSS, JS, etc.
+//    Ela serve automaticamente arquivos como `/cadastro.html`, `/painelpro.html`, etc.
 // =====================================================
 app.use(express.static(path.join(__dirname, 'public')));
 
-// =====================================================
-// Rota principal '/' serve o login.html
-// ⬅️ Mantenha apenas esta rota para o endereço principal
-// =====================================================
+// Rota principal '/' para a página de login
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
