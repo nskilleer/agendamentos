@@ -1,15 +1,14 @@
 // Arquivo: index.js
-require('dotenv').config({ path: './variaveisambiente.env' }); // Carrega variáveis de ambiente
-const app = require('./app'); // Importa a aplicação Express
-const logger = require('./configuracoes/logger'); // Importa o logger
-const { connectDB } = require('./middlewares/dbMiddleware'); // Importa a função de conexão com o DB
 
-const port = process.env.PORT || 3333; // Define a porta
+require('dotenv').config({ path: './variaveisambiente.env' }); 
+const app = require('./app'); 
+const logger = require('./configuracoes/logger');
+const { connectDB } = require('./middlewares/dbMiddleware');
 
-// ===================================
-// Inicialização do Servidor e Conexão com DB
-// ===================================
-async function startApplication() {
+const port = process.env.PORT || 3333;
+
+// Inicializa a aplicação
+async function startServer() {
     try {
         await connectDB();
         app.listen(port, () => {
@@ -18,9 +17,8 @@ async function startApplication() {
         });
     } catch (error) {
         logger.error('Falha ao iniciar o servidor:', error);
-        process.exit(1); // Encerrar o processo em caso de erro fatal
+        process.exit(1);
     }
 }
 
-// ⬅️ Chame a função para iniciar a aplicação!
-startApplication();
+startServer();
