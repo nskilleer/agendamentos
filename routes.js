@@ -27,7 +27,7 @@ router.post('/login', authController.login);
 router.post('/register', authController.register);
 router.get('/check_session', authController.checkSession);
 
-// Rotas de Agendamento do Cliente (não requerem autenticação)
+// Rotas públicas para cliente
 router.get('/get_servicos_cliente', serviceController.getServicosCliente);
 router.get('/get_horarios_disponiveis', scheduleController.getHorariosDisponiveis);
 router.post('/agendamentos', appointmentController.createAppointment);
