@@ -5,13 +5,29 @@ const session = require('express-session');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
+
+// =====================================================
+// Importa middlewares customizados
+// =====================================================
+const { requireAuth, checkUserType } = require('./middlewares/authMiddleware');
+const { dbMiddleware, connectDB } = require('./middlewares/dbMiddleware');
+const errorHandler = require('./middlewares/errorMiddleware');
+
+// =====================================================
+// DECLARAÇÃO DO APLICATIVO EXPRESS
+// ⚠️ IMPORTANTE: 'app' precisa ser declarado aqui antes de qualquer uso.
+// =====================================================
+const app = express();
+
 // =====================================================
 // Middlewares essenciais para o Express
 // =====================================================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rotas para servir arquivos HTML diretamente 
+// =====================================================
+// Rotas para servir arquivos HTML diretamente
+// =====================================================
 const htmlViews = [
     'login', 'cadastro', 'agenda', 'painelcli', 'painelpro', 'config'
 ];
@@ -25,7 +41,6 @@ htmlViews.forEach(view => {
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
-
 
 
 // =====================================================
@@ -92,7 +107,6 @@ app.use(helmet({
 // =====================================================
 // Middleware de Conexão com o Banco de Dados (MongoDB)
 // =====================================================
-// No ambiente serverless, evite reconectar a cada requisição
 app.use(dbMiddleware);
 
 // =====================================================
@@ -109,12 +123,6 @@ app.use('/api', apiRoutes);
 // =====================================================
 // Middleware de erro (último a ser chamado)
 // =====================================================
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'login.html'));
-});
-
-// Middleware de erro no final da cadeia.
-// Ele deve ser o último `app.use` a ser chamado.
 app.use(errorHandler);
 
 module.exports = app;
