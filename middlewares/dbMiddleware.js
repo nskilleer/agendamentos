@@ -12,15 +12,11 @@ const connectDB = async () => {
         }
 
         logger.info('Tentando conectar ao MongoDB...');
-        await mongoose.connect(mongoURI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        await mongoose.connect(mongoURI); // Opções obsoletas removidas
 
         logger.info('Conexão com MongoDB estabelecida com sucesso!');
 
     } catch (err) {
-        // Loga o erro exato antes de sair do processo
         logger.error('Erro fatal ao conectar ao MongoDB:', err);
         logger.error('Causa do erro:', err.message);
         logger.error('Possíveis causas: Credenciais incorretas, cluster do MongoDB inativo ou permissões de rede (IP) não configuradas no MongoDB Atlas.');
