@@ -99,3 +99,7 @@
 {"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:39:57"}
 {"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:39:57","userId":"6893c42c732c70b1617bc383"}
 {"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:39:58","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:46:57"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:46:59"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:46:59"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:46:59"}
