@@ -5,6 +5,7 @@ const session = require('express-session');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
+const MongoStore = require('connect-mongo'); 
 
 // =====================================================
 // Importa middlewares customizados
@@ -15,7 +16,6 @@ const errorHandler = require('./middlewares/errorMiddleware');
 
 // =====================================================
 // DECLARAÇÃO DO APLICATIVO EXPRESS
-// ⚠️ IMPORTANTE: 'app' precisa ser declarado aqui antes de qualquer uso.
 // =====================================================
 const app = express();
 
@@ -45,13 +45,19 @@ app.get('/', (req, res) => {
 
 // =====================================================
 // Configuração do Express-Session
-// ⚠️ IMPORTANTE: Em produção, use um store persistente (Redis ou MongoStore)
+// ⚠️ AGORA USANDO MongoStore para sessões persistentes
 // =====================================================
 const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
     secret: process.env.SESSION_SECRET || 'nana96393898nana',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({ // ⬅️ Nova configuração
+        mongoUrl: process.env.MONGODB_URI,
+        dbName: 'sessions', // Nome para o banco de sessões
+        collectionName: 'sessions', // Nome da coleção de sessões
+        ttl: 24 * 60 * 60, // Tempo de vida da sessão (em segundos)
+    }),
     cookie: {
         secure: isProduction,
         httpOnly: true,
