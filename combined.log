@@ -1,0 +1,101 @@
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 16:57:22"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 16:57:25"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 16:57:25"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 16:57:25"}
+{"email":"NATHANDASILVA052@GMAIL.COM","level":"info","message":"Tentativa de login","timestamp":"2025-08-10 17:01:02"}
+{"level":"info","message":"Login bem-sucedido","timestamp":"2025-08-10 17:01:02","userEmail":"NATHANDASILVA052@GMAIL.COM","user_id":"6893c42c732c70b1617bc383","user_type":"profissional"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:01:04"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:01:04","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:01:04","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/clientes","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:02:04"}
+{"level":"info","message":"Tentativa de obter clientes do profissional","timestamp":"2025-08-10 17:02:04","userId":"6893c42c732c70b1617bc383"}
+{"count":3,"level":"info","message":"Clientes encontrados para o profissional","timestamp":"2025-08-10 17:02:04","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:05:41"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:05:44"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:05:44"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:05:44"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:06:29"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:06:31"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:06:31"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:06:31"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:07:03"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:07:03","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:07:03","userId":"6893c42c732c70b1617bc383"}
+{"email":"NATHANDASILVA052@GMAIL.COM","level":"info","message":"Tentativa de login","timestamp":"2025-08-10 17:07:15"}
+{"level":"info","message":"Login bem-sucedido","timestamp":"2025-08-10 17:07:15","userEmail":"NATHANDASILVA052@GMAIL.COM","user_id":"6893c42c732c70b1617bc383","user_type":"profissional"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:07:17"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:07:17","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:07:17","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:09:15"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:09:18"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:09:18"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:09:18"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:09:19"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:09:19","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:09:19","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:09:45"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:09:47"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:09:47"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:09:47"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:09:58"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:09:58","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:09:58","userId":"6893c42c732c70b1617bc383"}
+{"email":"NATHANDASILVA052@GMAIL.COM","level":"info","message":"Tentativa de login","timestamp":"2025-08-10 17:10:03"}
+{"level":"info","message":"Login bem-sucedido","timestamp":"2025-08-10 17:10:03","userEmail":"NATHANDASILVA052@GMAIL.COM","user_id":"6893c42c732c70b1617bc383","user_type":"profissional"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:10:05"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:10:05","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:10:05","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:13:16"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:13:18"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:13:20"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:13:20"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:13:20"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:13:24"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:13:24","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:13:25","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:13:26"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:13:26","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:13:26","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:15:14"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:15:14","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:15:14","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:24:08"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:24:10"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:24:10"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:24:10"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:24:26"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:24:27"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:24:27"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:24:27"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:33:55"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:33:57"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:33:57"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:33:57"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:34:37"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:34:38"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:34:40"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:34:40"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:34:40"}
+{"email":"NATHANDASILVA052@GMAIL.COM","level":"info","message":"Tentativa de login","timestamp":"2025-08-10 17:38:21"}
+{"level":"info","message":"Login bem-sucedido","timestamp":"2025-08-10 17:38:22","userEmail":"NATHANDASILVA052@GMAIL.COM","user_id":"6893c42c732c70b1617bc383","user_type":"profissional"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:38:24"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:38:24","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:38:24","userId":"6893c42c732c70b1617bc383"}
+{"email":"NATHANDASILVA052@GMAIL.COM","level":"info","message":"Tentativa de login","timestamp":"2025-08-10 17:38:35"}
+{"level":"info","message":"Login bem-sucedido","timestamp":"2025-08-10 17:38:36","userEmail":"NATHANDASILVA052@GMAIL.COM","user_id":"6893c42c732c70b1617bc383","user_type":"profissional"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:38:38"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:38:38","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:38:38","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:39:45"}
+{"level":"info","message":"Tentando conectar ao MongoDB...","timestamp":"2025-08-10 17:39:46"}
+{"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 17:39:49"}
+{"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 17:39:49"}
+{"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 17:39:49"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:39:50"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:39:50","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:39:50","userId":"6893c42c732c70b1617bc383"}
+{"email":"NATHANDASILVA052@GMAIL.COM","level":"info","message":"Tentativa de login","timestamp":"2025-08-10 17:39:55"}
+{"level":"info","message":"Login bem-sucedido","timestamp":"2025-08-10 17:39:55","userEmail":"NATHANDASILVA052@GMAIL.COM","user_id":"6893c42c732c70b1617bc383","user_type":"profissional"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 17:39:57"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 17:39:57","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 17:39:58","userId":"6893c42c732c70b1617bc383"}

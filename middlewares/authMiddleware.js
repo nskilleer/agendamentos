@@ -10,7 +10,7 @@ const requireAuth = (req, res, next) => {
 
     if (!req.session.logged_in) {
         if (req.accepts('html')) {
-            return res.redirect('/login.html'); // ⬅️ CORRIGIDO!
+            return res.redirect('/login.html');
         }
         return res.status(401).json({ success: false, message: 'Não autorizado: Sessão expirada ou inválida.' });
     }
@@ -21,7 +21,7 @@ const requireAuth = (req, res, next) => {
 const checkUserType = (allowedTypes) => (req, res, next) => {
     if (!req.session.user_type || !allowedTypes.includes(req.session.user_type)) {
         if (req.accepts('html')) {
-            return res.redirect('/login.html'); // ⬅️ CORRIGIDO!
+            return res.redirect('/login.html');
         }
         return res.status(403).json({ success: false, message: 'Acesso não autorizado para este tipo de usuário.' });
     }

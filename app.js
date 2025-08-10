@@ -115,6 +115,20 @@ const apiRoutes = require('./routes');
 app.use('/api', apiRoutes);
 
 // =====================================================
+// Middleware para tratar rotas não encontradas
+// Isso ajuda a evitar o "Cannot GET" para rotas de páginas
+// =====================================================
+app.use((req, res, next) => {
+    // Se a requisição não for de API e não for um arquivo estático,
+    // redirecione para a página principal (login.html).
+    if (!req.path.startsWith('/api') && !req.path.includes('.')) {
+        res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    } else {
+        next(); // Continua para outros middlewares ou rotas
+    }
+});
+
+// =====================================================
 // Middleware de erro (último a ser chamado)
 // =====================================================
 app.use(errorHandler);

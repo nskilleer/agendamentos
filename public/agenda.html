@@ -140,7 +140,7 @@
 
             const handleAuthError = (response) => {
                 if (response.status === 401) {
-                    window.location.href = '/login';
+                    window.location.href = '/login.html';
                     return true;
                 }
                 return false;
@@ -442,7 +442,7 @@
                 } catch (error) {
                     console.error('Erro ao fazer logout:', error);
                 } finally {
-                    window.location.href = '/login';
+                    window.location.href = '/login.html';
                 }
             });
 
