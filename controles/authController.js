@@ -32,7 +32,7 @@ const authController = {
                 return renderError(res, 'Credenciais inválidas.');
             }
 
-            // Configurar a sessão com os nomes de variáveis corretos
+            // Configura a sessão
             req.session.logged_in = true;
             req.session.user_id = user._id;
             req.session.user_name = user.nome;
@@ -40,14 +40,14 @@ const authController = {
 
             logger.info('Login bem-sucedido', { user_id: user._id, userEmail: user.email, user_type: user.userType });
 
-            // Redirecionamento dinâmico baseado no tipo de usuário
+            // Redirecionamento dinâmico
             let redirectUrl;
             if (user.userType === 'profissional') {
-                redirectUrl = '/painelpro.html'; // ⬅️ CORRIGIDO!
+                redirectUrl = '/painelpro.html';
             } else if (user.userType === 'cliente') {
-                redirectUrl = '/painelcli.html'; // ⬅️ CORRIGIDO!
+                redirectUrl = '/painelcli.html';
             } else {
-                redirectUrl = '/'; // Redirecionamento padrão para outros tipos
+                redirectUrl = '/';
             }
 
             return renderJson(res, true, 'Login bem-sucedido!', false, {
@@ -102,12 +102,11 @@ const authController = {
 
             logger.info('Usuário registrado e logado com sucesso', { user_id: newUser._id, email: newUser.email, userType: newUser.userType });
 
-            // Redirecionamento dinâmico baseado no tipo de usuário
             let redirectUrl;
             if (newUser.userType === 'profissional') {
-                redirectUrl = '/painelpro.html'; // ⬅️ CORRIGIDO!
+                redirectUrl = '/painelpro.html';
             } else if (newUser.userType === 'cliente') {
-                redirectUrl = '/painelcli.html'; // ⬅️ CORRIGIDO!
+                redirectUrl = '/painelcli.html';
             } else {
                 redirectUrl = '/';
             }
@@ -142,6 +141,7 @@ const authController = {
 
     /**
      * Verifica a sessão do usuário.
+     * Retorna 401 se não estiver logado.
      */
     checkSession: (req, res) => {
         if (req.session && req.session.logged_in) {
@@ -152,11 +152,15 @@ const authController = {
                 user_type: req.session.user_type
             });
         } else {
-            return renderJson(res, true, 'Nenhuma sessão ativa.', false, {
-                logged_in: false,
-                user_id: null,
-                user_name: null,
-                user_type: null
+            return res.status(401).json({
+                success: false,
+                message: 'Nenhuma sessão ativa.',
+                data: {
+                    logged_in: false,
+                    user_id: null,
+                    user_name: null,
+                    user_type: null
+                }
             });
         }
     },
