@@ -5,7 +5,13 @@ const session = require('express-session');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
-// Rotas para servir arquivos HTML diretamente
+// =====================================================
+// Middlewares essenciais para o Express
+// =====================================================
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Rotas para servir arquivos HTML diretamente 
 const htmlViews = [
     'login', 'cadastro', 'agenda', 'painelcli', 'painelpro', 'config'
 ];
@@ -20,11 +26,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-// =====================================================
-// Middlewares essenciais para o Express
-// =====================================================
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
 
 // =====================================================
 // Configuração do Express-Session
