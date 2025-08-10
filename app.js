@@ -5,7 +5,7 @@ const session = require('express-session');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
-const MongoStore = require('connect-mongo'); 
+const MongoStore = require('connect-mongo'); // ⬅️ Importamos o MongoStore
 
 // =====================================================
 // Importa middlewares customizados
