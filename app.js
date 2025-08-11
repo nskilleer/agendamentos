@@ -9,7 +9,7 @@ const MongoStore = require('connect-mongo');
 // Importa middlewares customizados
 // =====================================================
 const { requireAuth, checkUserType } = require('./middlewares/authMiddleware');
-const { dbMiddleware, connectDB } = require('./middlewares/dbMiddleware');
+const { dbMiddleware } = require('./middlewares/dbMiddleware'); // 'connectDB' não é usado aqui
 const errorHandler = require('./middlewares/errorMiddleware');
 
 // =====================================================
@@ -24,17 +24,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // =====================================================
-// Configuração para servir arquivos estáticos
-// =====================================================
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Rota principal '/' para a página de login
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-
-// =====================================================
 // Configuração do Express-Session
+// ANTES dos middlewares globais para garantir que a sessão
+// esteja disponível para todos os outros middlewares.
 // =====================================================
 const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
@@ -59,7 +51,7 @@ app.use(session({
 // Middlewares Globais
 // =====================================================
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN || '*', // Permitir qualquer origem
+    origin: process.env.CORS_ORIGIN || '*',
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -103,7 +95,6 @@ const cspDirectives = {
 };
 
 if (!isProduction) {
-    // Permite eval() e websockets em desenvolvimento
     cspDirectives.scriptSrc.push("'unsafe-eval'");
     cspDirectives.connectSrc.push('ws://localhost:*/');
 }
@@ -122,25 +113,35 @@ app.use(helmet({
 app.use(dbMiddleware);
 
 // =====================================================
+// Configuração para servir arquivos estáticos e páginas públicas
+// Mova para o topo para que páginas como painelcli.html
+// e login.html sejam acessíveis sem autenticação.
+// =====================================================
+app.use(express.static(path.join(__dirname, 'public')));
+
+// =====================================================
 // Rotas da API
 // =====================================================
 const apiRoutes = require('./routes');
 app.use('/api', apiRoutes);
 
 // =====================================================
-// Middleware para tratar rotas não encontradas
+// Rota para páginas HTML que requerem autenticação
 // =====================================================
-app.use((req, res, next) => {
-    // Permite acesso direto a arquivos HTML
-    if (req.path.endsWith('.html') || req.path.includes('.')) {
-        return next();
-    }
+app.get('/painelpro.html', requireAuth, checkUserType(['profissional']), (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'painelpro.html'));
+});
 
-    if (!req.path.startsWith('/api')) {
-        res.sendFile(path.join(__dirname, 'public', 'login.html'));
-    } else {
-        res.status(404).json({ success: false, message: 'Rota não encontrada' });
+// =====================================================
+// Rota de fallback para a página de login
+// Qualquer outra rota não definida será redirecionada para o login.
+// =====================================================
+app.get('*', (req, res) => {
+    // Exclui arquivos estáticos de serem redirecionados
+    if (req.path.endsWith('.html') || req.path.includes('.')) {
+        return;
     }
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
 // =====================================================

@@ -175,3 +175,26 @@
 {"level":"info","message":"Conexão com MongoDB estabelecida com sucesso!","timestamp":"2025-08-10 20:47:32"}
 {"level":"info","message":"Servidor rodando na porta 3333","timestamp":"2025-08-10 20:47:32"}
 {"level":"info","message":"Servidor rodando: http://localhost:3333","timestamp":"2025-08-10 20:47:32"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 20:49:12"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 20:49:12","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 20:49:12","userId":"6893c42c732c70b1617bc383"}
+{"email":"NATHANDASILVA052@GMAIL.COM","level":"info","message":"Tentativa de login","timestamp":"2025-08-10 20:49:28"}
+{"level":"info","message":"Login bem-sucedido","timestamp":"2025-08-10 20:49:28","userEmail":"NATHANDASILVA052@GMAIL.COM","user_id":"6893c42c732c70b1617bc383","user_type":"profissional"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 20:49:30"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 20:49:30","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 20:49:30","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/get_horarios_funcionamento","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 20:50:22"}
+{"level":"info","message":"Tentativa de obter horários de funcionamento","timestamp":"2025-08-10 20:50:22","user_id":"6893c42c732c70b1617bc383"}
+{"count":7,"level":"info","message":"Horários de funcionamento encontrados","timestamp":"2025-08-10 20:50:22","user_id":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/servicos","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 20:50:23"}
+{"level":"info","message":"Buscando serviços para profissional","timestamp":"2025-08-10 20:50:23","user_id":"6893c42c732c70b1617bc383"}
+{"count":4,"level":"info","message":"Serviços encontrados","timestamp":"2025-08-10 20:50:23","user_id":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos?start=2025-08-10T00:00:00-03:00&end=2025-08-17T00:00:00-03:00","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 20:50:29"}
+{"level":"info","message":"Tentativa de obter agendamentos para o calendário","query":{"end":"2025-08-17T00:00:00-03:00","start":"2025-08-10T00:00:00-03:00"},"timestamp":"2025-08-10 20:50:29","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/servicos","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 20:50:29"}
+{"level":"info","message":"Buscando serviços para profissional","timestamp":"2025-08-10 20:50:29","user_id":"6893c42c732c70b1617bc383"}
+{"count":4,"level":"info","message":"Serviços encontrados","timestamp":"2025-08-10 20:50:29","user_id":"6893c42c732c70b1617bc383"}
+{"count":4,"level":"info","message":"Agendamentos encontrados para o calendário","timestamp":"2025-08-10 20:50:29","userId":"6893c42c732c70b1617bc383"}
+{"level":"info","message":"Verificando sessão para requisição","path":"/api/agendamentos/hoje","sessionId":"E5wW8OJR6yJZN3iI89gaen5f0iy3E6Q3","timestamp":"2025-08-10 20:50:35"}
+{"level":"info","message":"Tentativa de obter agendamentos de hoje","timestamp":"2025-08-10 20:50:35","userId":"6893c42c732c70b1617bc383"}
+{"count":5,"level":"info","message":"Agendamentos de hoje encontrados","timestamp":"2025-08-10 20:50:35","userId":"6893c42c732c70b1617bc383"}
