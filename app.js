@@ -18,6 +18,14 @@ const errorHandler = require('./middlewares/errorMiddleware');
 const app = express();
 
 // =====================================================
+// Adiciona trust proxy para ambientes de produção
+// =====================================================
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+}
+
+
+// =====================================================
 // Middlewares essenciais para o Express
 // =====================================================
 app.use(express.json());
@@ -25,8 +33,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // =====================================================
 // Configuração do Express-Session
-// ANTES dos middlewares globais para garantir que a sessão
-// esteja disponível para todos os outros middlewares.
 // =====================================================
 const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
@@ -40,10 +46,10 @@ app.use(session({
         ttl: 24 * 60 * 60,
     }),
     cookie: {
-        secure: isProduction,
+        secure: isProduction, // O cookie só será enviado via HTTPS em produção
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        ...(isProduction ? { sameSite: 'None' } : {}),
+        sameSite: isProduction ? 'none' : 'lax' // 'None' para CORS, 'Lax' para local
     }
 }));
 
