@@ -1,0 +1,140 @@
+/* Custom FullCalendar Styles for Manicure Dashboard */
+
+/* Status-based event colors */
+.fc-event.status-agendado {
+  background-color: #f59e0b !important;
+  border-color: #f59e0b !important;
+}
+
+.fc-event.status-confirmado {
+  background-color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+}
+
+.fc-event.status-concluido {
+  background-color: #10b981 !important;
+  border-color: #10b981 !important;
+}
+
+.fc-event.status-em_andamento {
+  background-color: #8b5cf6 !important;
+  border-color: #8b5cf6 !important;
+}
+
+.fc-event.status-cancelado {
+  background-color: #ef4444 !important;
+  border-color: #ef4444 !important;
+  opacity: 0.7;
+}
+
+/* Dark mode adjustments */
+.dark .fc {
+  --fc-border-color: #374151;
+  --fc-button-text-color: #f9fafb;
+  --fc-button-bg-color: #4f46e5;
+  --fc-button-border-color: #4f46e5;
+  --fc-button-hover-bg-color: #4338ca;
+  --fc-button-hover-border-color: #4338ca;
+  --fc-button-active-bg-color: #3730a3;
+  --fc-button-active-border-color: #3730a3;
+  --fc-today-bg-color: rgba(79, 70, 229, 0.1);
+  --fc-page-bg-color: #0c1427;
+}
+
+.dark .fc-toolbar-title {
+  color: #f9fafb !important;
+}
+
+.dark .fc-col-header-cell-cushion {
+  color: #d1d5db !important;
+}
+
+.dark .fc-daygrid-day-number {
+  color: #d1d5db !important;
+}
+
+.dark .fc-list-event-time {
+  color: #9ca3af !important;
+}
+
+.dark .fc-list-event-title {
+  color: #f9fafb !important;
+}
+
+.dark .fc-scrollgrid {
+  border-color: #374151 !important;
+}
+
+.dark .fc th,
+.dark .fc td {
+  border-color: #374151 !important;
+}
+
+/* Event content styling */
+.fc-event-title {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.fc-event-time {
+  font-weight: 600;
+  font-size: 11px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fc-toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .fc-button-group {
+    gap: 5px;
+  }
+  
+  .fc-button {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* Hover effects */
+.fc-event:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+/* Event dots for small screens */
+.fc-daygrid-dot-event .fc-event-title {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* More link styling */
+.fc-more-link {
+  color: #6b7280 !important;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.dark .fc-more-link {
+  color: #9ca3af !important;
+}
+
+/* Popover styling */
+.fc-more-popover {
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dark .fc-more-popover {
+  border-color: #374151;
+  background-color: #1f2937;
+}

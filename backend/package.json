@@ -1,0 +1,38 @@
+{
+  "name": "agendamento",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-mongo": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "helmet": "^8.1.0",
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.17.0",
+    "node-cron": "^4.2.1",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nskilleer/agendamentos.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nskilleer/agendamentos/issues"
+  },
+  "homepage": "https://github.com/nskilleer/agendamentos#readme"
+}

@@ -1,0 +1,28 @@
+{
+  "ignore": [
+    "*.log",
+    "logs/*",
+    "node_modules/*",
+    "*.test.js",
+    ".git",
+    ".nyc_output",
+    ".vscode",
+    "coverage/*",
+    "*.md"
+  ],
+  "watch": [
+    "*.js",
+    "controles/**/*.js",
+    "middlewares/**/*.js",
+    "models/**/*.js",
+    "configuracoes/**/*.js",
+    "routes.js",
+    "app.js",
+    "index.js"
+  ],
+  "ext": "js,json",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "verbose": false
+}

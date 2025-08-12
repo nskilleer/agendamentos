@@ -1,0 +1,79 @@
+/* Layout fixes for sidebar and header positioning */
+
+/* Ensure proper z-index layering */
+.sidebar-area {
+  z-index: 5;
+}
+
+.header-area {
+  z-index: 6;
+}
+
+/* Mobile sidebar overlay */
+.main-content-wrap.active .sidebar-area {
+  z-index: 7;
+}
+
+/* Ensure main content doesn't overflow */
+.main-content {
+  overflow-x: hidden;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 1279px) {
+  .sidebar-area {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .main-content-wrap.active .sidebar-area .burger-menu {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Ensure proper spacing for calendar components */
+.calendar-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Fix any potential FullCalendar responsive issues */
+@media (max-width: 768px) {
+  .fc-toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+/* Dark mode adjustments */
+.dark .burger-menu {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Ensure proper scrolling for sidebar */
+.sidebar-custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+}
+
+.sidebar-custom-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.sidebar-custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 10px;
+}
+
+.sidebar-custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(155, 155, 155, 0.8);
+}
