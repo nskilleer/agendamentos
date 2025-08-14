@@ -127,48 +127,54 @@ const appointmentController = {
     getAgendamentos: async (req, res) => {
         const userId = req.session.user_id;
         const { start, end } = req.query;
-        logger.info('Tentativa de obter agendamentos para o calendário', { userId, query: req.query });
+        logger.info('Tentativa de obter agendamentos', { userId, query: req.query });
 
         if (!userId) {
-            return renderError(res, 'Sessão expirada. Faça login novamente.', true);
-        }
-        if (!start || !end) {
-            return renderError(res, 'Datas de início e fim são obrigatórias.');
+            return renderError(res, 'Sessão expirada. Faça login novamente.', 401, true);
         }
 
         try {
-            const agendamentos = await Appointment.find({
-                userId: userId,
-                start: { $gte: new Date(start), $lte: new Date(end) },
-                end: { $lte: new Date(end) },
-                cancelado: false
-            }).populate('serviceId');
+            // Se não houver datas, retorna todos os agendamentos
+            let query = {
+                userId: userId
+            };
 
-            const formattedEvents = agendamentos.map(agendamento => {
+            if (start && end) {
+                query.start = { $gte: new Date(start), $lte: new Date(end) };
+            }
+
+            const agendamentos = await Appointment.find(query)
+                .populate('serviceId')
+                .sort({ start: -1 });
+
+            const formattedAppointments = agendamentos.map(agendamento => {
                 const serviceName = (agendamento.serviceId && agendamento.serviceId.nome) || 'Serviço Removido';
-                const serviceId = agendamento.serviceId ? agendamento.serviceId._id : null;
-                const status = getAppointmentStatus(agendamento);
-
+                const servicePrice = (agendamento.serviceId && agendamento.serviceId.preco) || 0;
+                
                 return {
+                    _id: agendamento._id,
                     id: agendamento._id,
-                    title: `${agendamento.nomeCliente || 'Agendamento'} - ${serviceName}`,
-                    start: agendamento.start.toISOString(),
-                    end: agendamento.end ? agendamento.end.toISOString() : undefined,
-                    extendedProps: {
-                        serviceId: serviceId,
-                        servico: serviceName,
-                        telefone: agendamento.telefoneCliente,
-                        status: status,
-                        cancelado: agendamento.cancelado
-                    }
+                    clientName: agendamento.nomeCliente,
+                    clientPhone: agendamento.telefoneCliente,
+                    serviceName: serviceName,
+                    serviceId: agendamento.serviceId ? agendamento.serviceId._id : null,
+                    date: agendamento.start,
+                    time: agendamento.start.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                    start: agendamento.start,
+                    end: agendamento.end,
+                    duration: agendamento.duracao_min,
+                    status: agendamento.status || 'agendado',
+                    price: servicePrice,
+                    observations: agendamento.observacoes || '',
+                    createdAt: agendamento.createdAt
                 };
             });
 
-            logger.info('Agendamentos encontrados para o calendário', { userId, count: formattedEvents.length });
-            return renderJson(res, true, 'Agendamentos obtidos com sucesso.', false, formattedEvents);
+            logger.info('Agendamentos encontrados', { userId, count: formattedAppointments.length });
+            return renderJson(res, true, 'Agendamentos obtidos com sucesso', false, formattedAppointments);
 
         } catch (err) {
-            logger.error('Erro ao obter agendamentos para o calendário:', err);
+            logger.error('Erro ao obter agendamentos:', err);
             return renderError(res, 'Erro ao obter agendamentos. Por favor, tente novamente mais tarde.');
         }
     },
@@ -181,40 +187,40 @@ const appointmentController = {
         const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
 
         if (!userId) {
-            return renderError(res, 'Sessão expirada. Faça login novamente.', true);
+            return renderError(res, 'Sessão expirada. Faça login novamente.', 401, true);
         }
 
         try {
             const agendamentos = await Appointment.find({
                 userId: userId,
-                start: { $gte: startOfDay, $lte: endOfDay },
-                cancelado: { $ne: true }
+                start: { $gte: startOfDay, $lte: endOfDay }
             })
                 .sort({ start: 1 })
                 .populate('serviceId');
 
             const formattedEvents = agendamentos.map(agendamento => {
                 const serviceName = (agendamento.serviceId && agendamento.serviceId.nome) || 'Serviço Removido';
-                const serviceId = agendamento.serviceId ? agendamento.serviceId._id : null;
-                const status = getAppointmentStatus(agendamento);
+                const servicePrice = (agendamento.serviceId && agendamento.serviceId.preco) || 0;
 
                 return {
                     id: agendamento._id,
-                    title: `${agendamento.nomeCliente || 'Agendamento'} - ${serviceName}`,
+                    title: agendamento.nomeCliente,
                     start: agendamento.start.toISOString(),
                     end: agendamento.end ? agendamento.end.toISOString() : undefined,
                     extendedProps: {
-                        serviceId: serviceId,
-                        servico: serviceName,
-                        telefone: agendamento.telefoneCliente,
-                        status: status,
-                        cancelado: agendamento.cancelado
+                        clientName: agendamento.nomeCliente,
+                        clientPhone: agendamento.telefoneCliente,
+                        service: serviceName,
+                        serviceId: agendamento.serviceId ? agendamento.serviceId._id : null,
+                        status: agendamento.status || 'agendado',
+                        price: servicePrice,
+                        observations: agendamento.observacoes || ''
                     }
                 };
             });
 
             logger.info('Agendamentos de hoje encontrados', { userId, count: formattedEvents.length });
-            return renderJson(res, true, 'Agendamentos obtidos com sucesso.', false, formattedEvents);
+            return renderJson(res, true, 'Agendamentos obtidos com sucesso', false, formattedEvents);
 
         } catch (err) {
             logger.error('Erro ao obter agendamentos de hoje:', err);
@@ -338,41 +344,65 @@ const appointmentController = {
     updateAppointment: async (req, res) => {
         const { appointmentId } = req.params;
         const userId = req.session.user_id;
-        const { serviceId, start, duracao_min, nomeCliente, telefoneCliente } = req.body;
+        const { status, serviceId, start, duracao_min, nomeCliente, telefoneCliente } = req.body;
         logger.info('Tentativa de atualizar agendamento', { appointmentId, body: req.body, userId });
 
-        if (!serviceId || !start || !duracao_min || !nomeCliente || !telefoneCliente) {
-            return renderError(res, 'Todos os campos de agendamento são obrigatórios para a edição.', 400);
-        }
-
         try {
+            // Se apenas status for fornecido, atualiza apenas o status
+            if (status && !serviceId && !start && !duracao_min && !nomeCliente && !telefoneCliente) {
+                const updatedAppointment = await Appointment.findOneAndUpdate(
+                    { _id: appointmentId, userId: userId },
+                    { status },
+                    { new: true, runValidators: true }
+                );
+
+                if (!updatedAppointment) {
+                    return renderError(res, 'Agendamento não encontrado ou você não tem permissão para editá-lo.', 404);
+                }
+
+                logger.info('Status do agendamento atualizado', { appointmentId, status });
+                return renderJson(res, true, 'Status atualizado com sucesso!', false, updatedAppointment);
+            }
+
+            // Atualização completa do agendamento
+            if (!serviceId || !start || !duracao_min || !nomeCliente || !telefoneCliente) {
+                return renderError(res, 'Todos os campos de agendamento são obrigatórios para a edição completa.', 400);
+            }
+
             const appointmentStart = new Date(start);
             const appointmentEnd = new Date(appointmentStart.getTime() + duracao_min * 60 * 1000);
 
             const overlappingAppointment = await Appointment.findOne({
                 _id: { $ne: appointmentId },
                 userId: userId,
-                cancelado: false,
+                status: { $nin: ['cancelado', 'nao_compareceu'] },
                 $or: [
                     { start: { $lt: appointmentEnd, $gte: appointmentStart } },
                     { end: { $gt: appointmentStart, $lte: appointmentEnd } },
                     { start: { $lte: appointmentStart }, end: { $gte: appointmentEnd } }
                 ]
             });
+            
             if (overlappingAppointment) {
                 return renderError(res, 'O novo horário está indisponível. Há um conflito com outro agendamento.');
             }
 
+            const updateData = {
+                serviceId,
+                start: appointmentStart,
+                end: appointmentEnd,
+                duracao_min,
+                nomeCliente,
+                telefoneCliente
+            };
+
+            if (status) {
+                updateData.status = status;
+            }
+
             const updatedAppointment = await Appointment.findOneAndUpdate(
                 { _id: appointmentId, userId: userId },
-                {
-                    serviceId,
-                    start: appointmentStart,
-                    end: appointmentEnd,
-                    duracao_min,
-                    nomeCliente,
-                    telefoneCliente
-                },
+                updateData,
                 { new: true, runValidators: true }
             );
 
