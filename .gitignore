@@ -12,6 +12,9 @@ node_modules/
 backend/node_modules/
 */node_modules/
 
+# React Tailwind folder
+react-tailwindcss/
+
 # Build output
 dist
 dist-ssr
