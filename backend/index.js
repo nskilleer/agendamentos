@@ -1,6 +1,13 @@
 // Arquivo: index.js
 
-require('dotenv').config({ path: './variaveisambiente.env' }); 
+// Tenta carregar variáveis de ambiente do arquivo se existir
+try {
+    require('dotenv').config({ path: './variaveisambiente.env' });
+    console.log('✅ Variáveis de ambiente carregadas do arquivo');
+} catch (err) {
+    console.log('⚠️ Arquivo de variáveis não encontrado, usando variáveis do sistema');
+}
+
 const app = require('./app'); 
 const logger = require('./configuracoes/logger');
 const { connectDB } = require('./middlewares/dbMiddleware');
@@ -133,5 +140,10 @@ async function startServer() {
 }
 
 // Inicia a aplicação
-console.log('🔄 Iniciando AgendaFácil...\n');
+console.log('🔄 Iniciando AgendaFácil...');
+console.log(`📍 PORT da variável de ambiente: ${process.env.PORT}`);
+console.log(`🔧 NODE_ENV: ${process.env.NODE_ENV || 'não definido'}`);
+console.log(`🔑 SESSION_SECRET configurado: ${process.env.SESSION_SECRET ? 'Sim' : 'Não'}`);
+console.log(`📊 MONGODB_URI configurada: ${process.env.MONGODB_URI ? 'Sim' : 'Não'}\n`);
+
 startServer();
