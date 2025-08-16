@@ -20,6 +20,14 @@ const publicBookingController = require('./controles/publicBookingController');
 // =====================================================
 // Rotas de Acesso Público para Clientes e Visualização de Dados
 // =====================================================
+// Health check route for Railway
+router.get('/health', (req, res) => {
+    return res.status(200).json({ 
+        status: 'healthy',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Rota de boas-vindas da API (geralmente usada para verificar se o servidor está online)
 // Test route FIRST
 router.get('/test', (req, res) => {

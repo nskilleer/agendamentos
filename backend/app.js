@@ -94,11 +94,30 @@ const corsOptions = {
             
             return callback(new Error('Não permitido pelo CORS'));
         } else {
-            // Em produção, usa apenas a origin configurada
-            const allowedOrigin = process.env.CORS_ORIGIN;
-            if (origin === allowedOrigin || !origin) {
+            // Em produção, aceita múltiplas origens
+            const allowedOrigins = [
+                process.env.CORS_ORIGIN,
+                'https://*.railway.app',
+                'https://*.up.railway.app'
+            ].filter(Boolean);
+            
+            // Permite requisições sem origin (ex: server-to-server)
+            if (!origin) return callback(null, true);
+            
+            // Verifica se a origin está permitida
+            const isAllowed = allowedOrigins.some(allowed => {
+                if (allowed.includes('*')) {
+                    const pattern = allowed.replace('*', '.*');
+                    return new RegExp(pattern).test(origin);
+                }
+                return origin === allowed;
+            });
+            
+            if (isAllowed) {
                 return callback(null, true);
             }
+            
+            console.log(`⚠️ CORS bloqueou origin: ${origin}`);
             return callback(new Error('Não permitido pelo CORS'));
         }
     },
