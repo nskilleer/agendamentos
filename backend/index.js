@@ -94,7 +94,7 @@ async function startServer() {
         console.log('⚙️ Configurando servidor Express...');
         
         // Inicia o servidor
-        const server = app.listen(port, () => {
+        const server = app.listen(port, '0.0.0.0', () => {
             console.log('✅ Servidor HTTP iniciado com sucesso!');
             console.log(`🌐 URL Local: http://localhost:${port}`);
             console.log(`📡 URL API: http://localhost:${port}/api`);
