@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "start:dev": "node start-dev.js",
     "backend": "cd backend && npm start",
-    "frontend": "vite"
+    "frontend": "vite",
+    "start": "cd backend && node index.js",
+    "build:all": "npm install && npm run build && cd backend && npm install"
   },
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.19",
