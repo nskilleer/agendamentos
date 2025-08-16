@@ -252,7 +252,7 @@ app.use('/api', apiRoutes);
 console.log('✅ Rotas da API configuradas');
 
 // =====================================================
-// Servir o frontend em produção
+// Servir o frontend em produção (DEVE VIR DEPOIS DAS ROTAS API)
 // =====================================================
 if (process.env.NODE_ENV === 'production') {
     // O build do Vite está na pasta dist na raiz do projeto
@@ -261,19 +261,24 @@ if (process.env.NODE_ENV === 'production') {
     
     if (fs.existsSync(frontendPath)) {
         console.log('✅ Pasta dist encontrada, servindo frontend React');
+        
+        // Servir arquivos estáticos (JS, CSS, imagens, etc)
         app.use(express.static(frontendPath));
         
-        // Todas as rotas não-API devem retornar o index.html (SPA)
+        // IMPORTANTE: Catch-all route para SPA - deve ser a ÚLTIMA rota
+        // Qualquer rota que não seja /api/* retorna o index.html
         app.get('*', (req, res) => {
-            // Não servir index.html para rotas de API
-            if (!req.path.startsWith('/api')) {
-                res.sendFile(path.join(frontendPath, 'index.html'));
-            }
+            console.log(`📄 Servindo index.html para rota: ${req.path}`);
+            res.sendFile(path.join(frontendPath, 'index.html'));
         });
+        
+        console.log('🎯 Frontend React configurado para todas as rotas não-API');
     } else {
         console.log('⚠️ Pasta dist não encontrada - frontend não será servido');
         console.log('💡 Execute "npm run build" na raiz do projeto para criar o build');
     }
+} else {
+    console.log('🔧 Modo desenvolvimento - frontend servido pelo Vite na porta 5173');
 }
 
 // =====================================================
