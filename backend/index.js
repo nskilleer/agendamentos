@@ -109,15 +109,17 @@ async function startServer() {
         
         console.log('🔌 Tentando conectar ao MongoDB...');
         
-        // Tenta conectar ao banco de dados
-        try {
-            await connectDB();
-            console.log('✅ Aplicação totalmente inicializada!');
-            console.log('🎉 AgendaFácil está pronto para receber requisições!\n');
-        } catch (dbError) {
-            console.log('⚠️ Servidor iniciado, mas sem conexão com banco de dados');
-            console.log('📊 Algumas funcionalidades podem estar limitadas\n');
-        }
+        // Tenta conectar ao banco de dados (não bloqueia a inicialização)
+        connectDB()
+            .then(() => {
+                console.log('✅ Aplicação totalmente inicializada!');
+                console.log('🎉 AgendaFácil está pronto para receber requisições!\n');
+            })
+            .catch((dbError) => {
+                console.log('⚠️ Servidor iniciado, mas sem conexão com banco de dados');
+                console.log('📊 Algumas funcionalidades podem estar limitadas\n');
+                console.log('❌ Erro do MongoDB:', dbError.message);
+            });
         
     } catch (error) {
         console.log('\n💥 ERRO FATAL AO INICIAR SERVIDOR:');

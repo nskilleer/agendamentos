@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const path = require('path');
 const MongoStore = require('connect-mongo');
 const fs = require('fs');
+const mongoose = require('mongoose');
 
 // =====================================================
 // Importa middlewares customizados
@@ -219,16 +220,33 @@ app.use((req, res, next) => {
 console.log('✅ Middleware de logging configurado');
 
 // =====================================================
-// Middleware de Conexão com o Banco de Dados (MongoDB)
-// =====================================================
-console.log('🔧 Configurando middleware de banco de dados...');
-app.use(dbMiddleware);
-console.log('✅ Middleware de banco configurado');
-
-// =====================================================
-// Rotas da API
+// Rotas da API (Health check primeiro, sem middleware de DB)
 // =====================================================
 console.log('🔧 Carregando rotas da API...');
+
+// Health check route - SEM middleware de banco de dados
+app.get('/api/health', (req, res) => {
+    const mongoStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    return res.status(200).json({ 
+        status: 'healthy',
+        mongodb: mongoStatus,
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Middleware de banco apenas para rotas que precisam
+console.log('🔧 Configurando middleware de banco de dados...');
+app.use('/api', (req, res, next) => {
+    // Health check não precisa de banco
+    if (req.path === '/health') {
+        return next();
+    }
+    // Outras rotas precisam do banco
+    dbMiddleware(req, res, next);
+});
+console.log('✅ Middleware de banco configurado');
+
+// Outras rotas da API
 const apiRoutes = require('./routes');
 app.use('/api', apiRoutes);
 console.log('✅ Rotas da API configuradas');
