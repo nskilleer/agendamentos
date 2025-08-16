@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://agendamentos-production-acfd.up.railway.app/api/:path*"
+      "destination": "https://agendamentos-production-12c5.up.railway.app/api/:path*"
     },
     {
       "source": "/(.*)",

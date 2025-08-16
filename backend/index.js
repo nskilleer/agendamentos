@@ -2,10 +2,16 @@
 
 // Tenta carregar variáveis de ambiente do arquivo se existir
 try {
-    require('dotenv').config({ path: './variaveisambiente.env' });
-    console.log('✅ Variáveis de ambiente carregadas do arquivo');
+    const fs = require('fs');
+    if (fs.existsSync('./variaveisambiente.env')) {
+        require('dotenv').config({ path: './variaveisambiente.env' });
+        console.log('✅ Variáveis de ambiente carregadas do arquivo local');
+    } else {
+        console.log('📋 Arquivo local não encontrado, usando variáveis do sistema (Railway/Produção)');
+    }
 } catch (err) {
-    console.log('⚠️ Arquivo de variáveis não encontrado, usando variáveis do sistema');
+    console.log('⚠️ Erro ao carregar variáveis de ambiente:', err.message);
+    console.log('📋 Continuando com variáveis do sistema...');
 }
 
 const app = require('./app'); 
@@ -139,11 +145,33 @@ async function startServer() {
     }
 }
 
+// Validação de variáveis de ambiente críticas
+function validateEnvironment() {
+    const requiredVars = ['MONGODB_URI', 'SESSION_SECRET'];
+    const missingVars = requiredVars.filter(varName => !process.env[varName]);
+    
+    if (missingVars.length > 0) {
+        console.log('❌ ERRO: Variáveis de ambiente obrigatórias não encontradas:');
+        missingVars.forEach(varName => {
+            console.log(`   - ${varName}`);
+        });
+        console.log('\n📋 Para Railway, configure essas variáveis em:');
+        console.log('   1. Acesse seu projeto no Railway');
+        console.log('   2. Vá para a aba "Variables"');
+        console.log('   3. Adicione cada variável necessária');
+        console.log('\n⚠️ A aplicação pode não funcionar corretamente sem essas variáveis.\n');
+    }
+}
+
 // Inicia a aplicação
 console.log('🔄 Iniciando AgendaFácil...');
 console.log(`📍 PORT da variável de ambiente: ${process.env.PORT}`);
 console.log(`🔧 NODE_ENV: ${process.env.NODE_ENV || 'não definido'}`);
 console.log(`🔑 SESSION_SECRET configurado: ${process.env.SESSION_SECRET ? 'Sim' : 'Não'}`);
-console.log(`📊 MONGODB_URI configurada: ${process.env.MONGODB_URI ? 'Sim' : 'Não'}\n`);
+console.log(`📊 MONGODB_URI configurada: ${process.env.MONGODB_URI ? 'Sim' : 'Não'}`);
+console.log(`🌐 CORS_ORIGIN: ${process.env.CORS_ORIGIN || 'não definido'}\n`);
+
+// Valida variáveis de ambiente
+validateEnvironment();
 
 startServer();
